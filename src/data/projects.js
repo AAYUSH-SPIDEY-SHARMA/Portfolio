@@ -12,8 +12,9 @@ export const featuredProject = {
         "Prepared system for deployment and future features"
     ],
     techStack: ["React", "Tailwind CSS", "JavaScript", "GitHub"],
-    githubLink: "https://github.com/AAYUSH-SPIDEY-SHARMA",
-    demoLink: null
+    githubLink: "https://github.com/AAYUSH-SPIDEY-SHARMA/Aether-frontend",
+    githubLinkBackend: "https://github.com/AAYUSH-SPIDEY-SHARMA/Aether-backend",
+    demoLink: "https://aether-frontend-inky.vercel.app/"
 };
 
 export const secondaryProjects = [
