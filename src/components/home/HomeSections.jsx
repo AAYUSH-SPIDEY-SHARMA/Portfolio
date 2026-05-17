@@ -296,10 +296,11 @@ const showcaseItems = [
     desc: 'Full-stack web platform with JWT auth, Razorpay integration, event management, and role-based access control.',
     tags: ['React', 'Node.js', 'MongoDB'],
     link: '#',
-    image: '/card3.png',
+    image: '/card9.png',
     align: 'left', // Character on the left
-    scale: 1.7, 
-    translateX: '55px', // Increased from 35px to perfectly close the gap
+    scale: 1.45, 
+    translateX: '-35px', // Push left to stop overlapping the text
+    translateY: '-40px', // Shift upward
   },
   {
     title: 'P4-SpecTec',
@@ -309,7 +310,7 @@ const showcaseItems = [
     link: '#',
     image: '/card7.png', 
     align: 'right', // Character on the right
-    scale: 1.4,
+    scale: 1.25,
     translateX: '-45px', // Push left to attach arm to the card
   },
   {
@@ -322,6 +323,17 @@ const showcaseItems = [
     align: 'left',
     scale: 1.35,
     translateX: '45px', // Push right to attach to the card
+  },
+  {
+    title: 'Project 4',
+    subtitle: 'Coming Soon',
+    desc: 'An upcoming professional project. Currently in development with cutting-edge tech.',
+    tags: ['React', 'Tailwind', 'Node.js'],
+    link: '#',
+    image: '/card8.png', 
+    align: 'right', // Character on the right
+    scale: 1.35,
+    translateX: '-45px', // Push left to attach to the card
   },
 ];
 
@@ -363,7 +375,7 @@ export const ProjectShowcase = () => {
         </motion.div>
 
         {/* Grid layout for multiple compact cards */}
-        <div className="flex flex-wrap justify-center gap-10 md:gap-14 max-w-7xl mx-auto px-2">
+        <div className="grid grid-cols-1 xl:grid-cols-2 justify-items-center gap-10 md:gap-x-4 md:gap-y-64 max-w-[1400px] mx-auto px-2">
           {showcaseItems.map((project, idx) => {
             const isLeft = project.align === 'left';
             
@@ -386,7 +398,7 @@ export const ProjectShowcase = () => {
                       src={project.image} 
                       alt={`${project.title} character`} 
                       className="h-[280px] md:h-[360px] w-auto object-contain drop-shadow-[0_15px_30px_rgba(0,0,0,0.3)] transition-transform duration-500"
-                      style={{ transform: `scale(${project.scale}) translateX(${project.translateX})` }}
+                      style={{ transform: `scale(${project.scale}) translateX(${project.translateX}) translateY(${project.translateY || '0px'})` }}
                       onError={(e) => { e.target.style.display = 'none'; }} 
                     />
                   </motion.div>
@@ -442,7 +454,7 @@ export const ProjectShowcase = () => {
                       src={project.image} 
                       alt={`${project.title} character`} 
                       className="h-[280px] md:h-[360px] w-auto object-contain drop-shadow-[0_15px_30px_rgba(0,0,0,0.3)] transition-transform duration-500"
-                      style={{ transform: `scale(${project.scale}) translateX(${project.translateX})` }}
+                      style={{ transform: `scale(${project.scale}) translateX(${project.translateX}) translateY(${project.translateY || '0px'})` }}
                       onError={(e) => { e.target.style.display = 'none'; }} 
                     />
                   </motion.div>
