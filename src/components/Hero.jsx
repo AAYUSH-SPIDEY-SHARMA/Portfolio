@@ -1,9 +1,9 @@
 import { github, instagram, linkedin, twitter, resume } from "../data/links";
-import heroBg from "../assets/hero-bg.png";
-import heroIllustration from "../assets/hero-illustration.png";
-import githubIcon from "../assets/github-icon.png";
-import instagramIcon from "../assets/instagram-icon.png";
-import ariseSilhouette from "../assets/stickers/anime/arise-silhouette.jpg";
+const heroBg = "https://res.cloudinary.com/du8isxcag/image/upload/v1779048913/portfolio_assets/src_assets/hero-bg.png";
+const heroIllustration = "https://res.cloudinary.com/du8isxcag/image/upload/v1779048915/portfolio_assets/src_assets/hero-illustration.png";
+const githubIcon = "https://res.cloudinary.com/du8isxcag/image/upload/v1779048911/portfolio_assets/src_assets/github-icon.png";
+const instagramIcon = "https://res.cloudinary.com/du8isxcag/image/upload/v1779048916/portfolio_assets/src_assets/instagram-icon.png";
+const ariseSilhouette = "https://res.cloudinary.com/du8isxcag/image/upload/v1779048917/portfolio_assets/src_assets/arise-silhouette.jpg";
 
 const Hero = () => {
     return (
