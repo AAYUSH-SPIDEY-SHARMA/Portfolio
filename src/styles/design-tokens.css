@@ -1,0 +1,148 @@
+/* ═══════════════════════════════════════════════════════════
+   🕷️ AAYUSH SHARMA PORTFOLIO — DESIGN TOKENS
+   The Spider-Verse Design System
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Brand Core ── */
+  --primary: #6C5CE7;
+  --primary-light: #A29BFE;
+  --primary-dark: #4A3ACD;
+  --secondary: #00D2FF;
+  --accent-red: #E63946;
+  --accent-gold: #FECA57;
+  --accent-matrix: #00FF41;
+  --accent-coral: #FF6B6B;
+
+  /* ── Spider-Man Specifics ── */
+  --spider-red: #E63946;
+  --spider-red-glow: #FF1744;
+  --spider-blue: #1D3557;
+  --spider-web: #A8DADC;
+
+  /* ── Font Variables ── */
+  --font-display: 'Orbitron', sans-serif;
+  --font-heading: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-japanese: 'Noto Sans JP', sans-serif;
+  --font-handwriting: 'Caveat', cursive;
+
+  /* ── Light Mode (Requested) ── */
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F8F9FA;
+  --bg-elevated: #F1F3F5;
+  --bg-glass: rgba(255, 255, 255, 0.85);
+  --text-primary: #111827;
+  --text-secondary: #4B5563;
+  --text-accent: #000000;
+  --text-muted: #6B7280;
+  --border-default: rgba(0, 0, 0, 0.08);
+  --border-hover: rgba(0, 0, 0, 0.15);
+  --border-active: rgba(108, 92, 231, 0.5);
+
+  /* ── Mood Palettes ── */
+  /* Gaming */
+  --gaming-bg: #0D0D0D;
+  --gaming-red: #FF4655;
+  --gaming-orange: #FF9800;
+
+  /* Romance / Her */
+  --romance-bg: #FFF0F5;
+  --romance-pink: #FF69B4;
+  --romance-petal: #FFB7C5;
+  --romance-soft: #FFC0CB;
+
+  /* Hacker / Terminal */
+  --hacker-bg: #0A0E0A;
+  --hacker-green: #00FF41;
+  --hacker-dim: #0D4D0D;
+
+  /* Blog / Journal */
+  --journal-bg: #FFF8F0;
+  --journal-brown: #8B4513;
+  --journal-warm: #DEB887;
+  --journal-ink: #2C1810;
+  --journal-accent: #DEB887;
+
+  /* Sports */
+  --sports-orange: #FF6B00;
+  --sports-gold: #FFD700;
+  --sports-bronze: #CD7F32;
+
+  /* Journey (Night Sky) */
+  --journey-dark: #0F0C29;
+  --journey-mid: #302B63;
+  --journey-light: #24243E;
+
+  /* ── Glow Shadows ── */
+  --glow-purple: 0 0 20px rgba(108, 92, 231, 0.4), 0 0 60px rgba(108, 92, 231, 0.1);
+  --glow-blue: 0 0 20px rgba(0, 210, 255, 0.4), 0 0 60px rgba(0, 210, 255, 0.1);
+  --glow-red: 0 0 20px rgba(230, 57, 70, 0.4), 0 0 60px rgba(230, 57, 70, 0.1);
+  --glow-green: 0 0 20px rgba(0, 255, 65, 0.4), 0 0 60px rgba(0, 255, 65, 0.1);
+  --glow-pink: 0 0 20px rgba(255, 105, 180, 0.4), 0 0 60px rgba(255, 105, 180, 0.1);
+  --glow-gold: 0 0 20px rgba(254, 202, 87, 0.4), 0 0 60px rgba(254, 202, 87, 0.1);
+
+  /* ── Shadows ── */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.15);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,0.2);
+  --shadow-xl: 0 20px 60px rgba(0,0,0,0.3);
+
+  /* ── Spacing (8px base) ── */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  /* ── Layout ── */
+  --max-width: 1400px;
+  --content-width: 1200px;
+  --narrow-width: 800px;
+  --card-radius: 1rem;
+  --card-radius-lg: 1.5rem;
+
+  /* ── Transitions ── */
+  --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --duration-fast: 0.15s;
+  --duration-normal: 0.3s;
+  --duration-slow: 0.5s;
+}
+
+/* ── Glassmorphism Utility ── */
+.glass {
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-default);
+}
+
+.glass-hover:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ── Neon Text Utility ── */
+.neon-purple { text-shadow: 0 0 7px var(--primary), 0 0 20px var(--primary), 0 0 40px var(--primary); }
+.neon-blue { text-shadow: 0 0 7px var(--secondary), 0 0 20px var(--secondary), 0 0 40px var(--secondary); }
+.neon-red { text-shadow: 0 0 7px var(--accent-red), 0 0 20px var(--accent-red), 0 0 40px var(--accent-red); }
+.neon-green { text-shadow: 0 0 10px rgba(0, 255, 65, 0.5), 0 0 30px rgba(0, 255, 65, 0.2), 0 0 60px rgba(0, 255, 65, 0.1); color: #00FF41; }
+
+/* ── Glow Border Utility ── */
+.glow-border-purple { box-shadow: var(--glow-purple); }
+.glow-border-blue { box-shadow: var(--glow-blue); }
+.glow-border-red { box-shadow: var(--glow-red); }
+
+/* ── Gradient Utilities ── */
+.gradient-purple-blue { background: linear-gradient(135deg, var(--primary), var(--secondary)); }
+.gradient-red-orange { background: linear-gradient(135deg, var(--accent-red), var(--gaming-orange)); }
+.gradient-pink-soft { background: linear-gradient(135deg, var(--romance-pink), var(--romance-petal)); }
+.gradient-night-sky { background: linear-gradient(180deg, var(--journey-dark), var(--journey-mid), var(--journey-light)); }
