@@ -23,7 +23,7 @@ const Footer = () => {
 
       {/* ── EYES IMAGE ── Full-width background, full opacity ── */}
       <img
-        src="/EYES HD.png"
+        src="https://res.cloudinary.com/du8isxcag/image/upload/v1779047589/portfolio_assets/EYES_HD.png"
         alt=""
         className="absolute inset-0 w-full h-full object-cover object-[center_20%]"
       />

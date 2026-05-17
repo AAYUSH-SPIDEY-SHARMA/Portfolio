@@ -63,7 +63,7 @@ export const AboutMeSection = () => (
           <div className="relative rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.1)]">
             <div className="absolute inset-0 bg-gradient-to-tr from-gray-100 to-transparent opacity-20 mix-blend-overlay"></div>
             <img 
-              src="/portfolio.png" 
+              src="https://res.cloudinary.com/du8isxcag/image/upload/v1779047603/portfolio_assets/portfolio.png" 
               alt="Aayush Sharma" 
               className="w-full h-auto object-cover rounded-2xl transform hover:scale-105 transition-transform duration-700"
             />
@@ -255,7 +255,7 @@ export const SkillCloudSection = () => {
           >
             <div className="absolute inset-0 bg-gray-200 opacity-40 blur-[60px] rounded-full" />
             <img 
-              src="/MC.png" 
+              src="https://res.cloudinary.com/du8isxcag/image/upload/v1779047601/portfolio_assets/MC.png" 
               alt="MC" 
               className="relative z-10 w-full drop-shadow-2xl object-contain" 
               style={{ WebkitMaskImage: 'linear-gradient(to bottom, black 85%, transparent 100%)', maskImage: 'linear-gradient(to bottom, black 85%, transparent 100%)' }}
@@ -296,7 +296,7 @@ const showcaseItems = [
     desc: 'Full-stack web platform with JWT auth, Razorpay integration, event management, and role-based access control.',
     tags: ['React', 'Node.js', 'MongoDB'],
     link: '#',
-    image: '/card9.png',
+    image: 'https://res.cloudinary.com/du8isxcag/image/upload/v1779048016/portfolio_assets/card9_lossless.webp',
     align: 'left', // Character on the left
     scale: 1.45, 
     translateX: '-35px', // Push left to stop overlapping the text
@@ -308,7 +308,7 @@ const showcaseItems = [
     desc: 'Core contribution to WebAssembly spec tooling. Implemented non-local type inference in OCaml.',
     tags: ['OCaml', 'WebAssembly'],
     link: '#',
-    image: '/card7.png', 
+    image: 'https://res.cloudinary.com/du8isxcag/image/upload/v1779047552/portfolio_assets/card7.png', 
     align: 'right', // Character on the right
     scale: 1.25,
     translateX: '-45px', // Push left to attach arm to the card
@@ -319,7 +319,7 @@ const showcaseItems = [
     desc: 'Platform that aggregates CP profiles, tracks progress, and generates heatmaps across platforms.',
     tags: ['Next.js', 'Firebase', 'APIs'],
     link: '#',
-    image: '/card5.png', 
+    image: 'https://res.cloudinary.com/du8isxcag/image/upload/v1779048030/portfolio_assets/card5_lossless.webp', 
     align: 'left',
     scale: 1.35,
     translateX: '45px', // Push right to attach to the card
@@ -330,7 +330,7 @@ const showcaseItems = [
     desc: 'An upcoming professional project. Currently in development with cutting-edge tech.',
     tags: ['React', 'Tailwind', 'Node.js'],
     link: '#',
-    image: '/card8.png', 
+    image: 'https://res.cloudinary.com/du8isxcag/image/upload/v1779047554/portfolio_assets/card8.png', 
     align: 'right', // Character on the right
     scale: 1.35,
     translateX: '-45px', // Push left to attach to the card
@@ -353,7 +353,7 @@ export const ProjectShowcase = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             viewport={{ once: true }}
-            src="/card6.png" 
+            src="https://res.cloudinary.com/du8isxcag/image/upload/v1779047550/portfolio_assets/card6.png" 
             alt="Character sitting on title" 
             className="relative w-56 md:w-[320px] z-20 pointer-events-none drop-shadow-[0_15px_30px_rgba(0,0,0,0.4)] -mb-[95px] md:-mb-[135px] translate-x-[10px] md:translate-x-[15px]"
             onError={(e) => { e.target.style.display = 'none'; }} 

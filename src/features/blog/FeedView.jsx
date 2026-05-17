@@ -9,36 +9,51 @@ const FeedView = ({ posts, selectedMoodFilter, onMoodFilterChange }) => {
       key="feed"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0 }}
-      className="max-w-2xl mx-auto"
+      exit={{ opacity: 0, y: -10 }}
+      className="max-w-4xl mx-auto"
     >
       {/* Mood Filter */}
-      <div className="flex flex-wrap justify-center gap-2 mb-8">
-        {[{ id: 'all', label: 'All' }, ...Object.entries(moodColors).map(([k, v]) => ({ id: k, label: `${v.emoji} ${k}` }))].map(f => (
+      <div className="flex flex-wrap justify-center gap-2 mb-16">
+        {[{ id: 'all', label: 'All Entries' }, ...Object.entries(moodColors).map(([k, v]) => ({ id: k, label: `${v.emoji} ${k}` }))].map(f => (
           <button
             key={f.id}
             onClick={() => onMoodFilterChange(f.id)}
-            className={`px-3 py-1.5 rounded-lg text-xs transition-all ${
+            className={`px-4 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase transition-all duration-300 ${
               selectedMoodFilter === f.id
-                ? 'text-white'
-                : 'text-[#8B7355] hover:text-[#DEB887]'
+                ? 'bg-slate-800 text-white shadow-md scale-105'
+                : 'bg-white/40 text-slate-500 hover:bg-white hover:text-slate-800 hover:shadow-sm'
             }`}
-            style={selectedMoodFilter === f.id ? { background: '#8B4513', border: '1px solid rgba(139,69,19,0.3)' } : { border: '1px solid rgba(139,69,19,0.1)' }}
           >
             {f.label}
           </button>
         ))}
       </div>
 
-      {/* Posts */}
-      <div className="space-y-4">
-        {posts.length > 0 ? posts.map((post, i) => (
-          <BlogCard key={i} post={post} index={i} />
-        )) : (
-          <div className="text-center py-16">
-            <PenLine size={32} className="mx-auto mb-3" style={{ color: '#8B7355' }} />
-            <p className="text-sm" style={{ color: '#8B7355' }}>No entries yet for this mood.</p>
-          </div>
+      {/* Posts - Asymmetrical Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12">
+        {posts.length > 0 ? posts.map((post, i) => {
+          // Asymmetrical layout logic
+          const isLeft = i % 2 === 0;
+          const isFeatured = i % 3 === 0;
+          
+          let colSpan = isFeatured ? 'md:col-span-10' : 'md:col-span-8';
+          let colStart = isLeft ? 'md:col-start-1' : (isFeatured ? 'md:col-start-3' : 'md:col-start-5');
+          let marginTop = i > 0 && !isLeft ? 'md:mt-24' : 'md:mt-0';
+
+          return (
+            <div key={i} className={`${colSpan} ${colStart} ${marginTop}`}>
+              <BlogCard post={post} index={i} isFeatured={isFeatured} />
+            </div>
+          );
+        }) : (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="md:col-span-12 text-center py-20"
+          >
+            <PenLine size={32} strokeWidth={1} className="mx-auto mb-4 text-slate-300" />
+            <p className="text-sm text-slate-500 font-medium">No logs found in this state.</p>
+          </motion.div>
         )}
       </div>
     </motion.div>
