@@ -196,7 +196,7 @@ export const SkillCloudSection = () => {
             {/* Massive Soft glow behind MC */}
             <div className="absolute inset-0 bg-gray-200 opacity-40 blur-[120px] rounded-full scale-110" />
             <img 
-              src="/MC.png" 
+              src="https://res.cloudinary.com/du8isxcag/image/upload/v1779047601/portfolio_assets/MC.png" 
               alt="Main Character" 
               className="relative z-10 w-full h-auto object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.25)]" 
               style={{ WebkitMaskImage: 'linear-gradient(to bottom, black 85%, transparent 100%)', maskImage: 'linear-gradient(to bottom, black 85%, transparent 100%)' }}
