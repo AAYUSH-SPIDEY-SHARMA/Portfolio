@@ -334,16 +334,32 @@ export const ProjectShowcase = () => {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-16 text-center flex flex-col items-center"
+          className="mb-28 text-center flex flex-col items-center relative -mt-8"
         >
-          <div className="flex items-center justify-center gap-3 mb-2">
-            <Sparkles className="w-5 h-5 text-[var(--primary)]" />
-            <span className="text-sm font-mono text-[var(--primary)] tracking-[0.25em] uppercase font-bold">Showcase</span>
-            <Sparkles className="w-5 h-5 text-[var(--primary)]" />
+          <motion.img 
+            initial={{ opacity: 0, y: -30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.2, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            viewport={{ once: true }}
+            src="/card6.png" 
+            alt="Character sitting on title" 
+            className="relative w-56 md:w-[320px] z-20 pointer-events-none drop-shadow-[0_15px_30px_rgba(0,0,0,0.4)] -mb-[95px] md:-mb-[135px] translate-x-[10px] md:translate-x-[15px]"
+            onError={(e) => { e.target.style.display = 'none'; }} 
+          />
+          <div className="relative">
+            <h2 
+              className="relative z-10 font-heading text-4xl sm:text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[var(--text-primary)] via-[var(--primary)] to-[var(--text-secondary)] drop-shadow-sm pb-2 mt-4 translate-x-[12px] md:translate-x-[16px]"
+            >
+              Things<span className="inline-block w-6 md:w-8"></span>I've Built
+            </h2>
+            {/* Overlay layer to push only 'i' in front of character */}
+            <h2 
+              className="absolute inset-0 z-30 font-heading text-4xl sm:text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[var(--text-primary)] via-[var(--primary)] to-[var(--text-secondary)] drop-shadow-sm pb-2 mt-4 translate-x-[12px] md:translate-x-[16px] pointer-events-none select-none"
+              aria-hidden="true"
+            >
+              <span className="invisible">Th</span>i<span className="invisible">ngs<span className="inline-block w-6 md:w-8"></span>I've Built</span>
+            </h2>
           </div>
-          <h2 className="font-heading text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[var(--text-primary)] via-[var(--primary)] to-[var(--text-secondary)] drop-shadow-sm pb-2">
-            Things I've Built
-          </h2>
         </motion.div>
 
         {/* Grid layout for multiple compact cards */}
