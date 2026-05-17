@@ -307,7 +307,7 @@ const showcaseItems = [
     desc: 'Core contribution to WebAssembly spec tooling. Implemented non-local type inference in OCaml.',
     tags: ['OCaml', 'WebAssembly'],
     link: '#',
-    image: '/card4.png', 
+    image: '/card7.png', 
     align: 'right', // Character on the right
     scale: 1.4,
     translateX: '-45px', // Push left to attach arm to the card
