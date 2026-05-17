@@ -1,7 +1,6 @@
 import PageWrapper from '../components/layout/PageWrapper';
 import Hero from '../components/Hero';
 import {
-  AchievementMarquee,
   AboutMeSection,
   SkillCloudSection,
   ProjectShowcase,
@@ -12,7 +11,6 @@ const Home = () => {
   return (
     <PageWrapper>
       <Hero />
-      <AchievementMarquee />
       <AboutMeSection />
       <SkillCloudSection />
       <ProjectShowcase />
