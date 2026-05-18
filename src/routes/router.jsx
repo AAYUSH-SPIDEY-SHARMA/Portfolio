@@ -9,7 +9,7 @@ const BlogPostPage = lazy(() => import('../pages/BlogPostPage'));
 const Wall = lazy(() => import('../pages/Wall'));
 const Contact = lazy(() => import('../pages/Contact'));
 const NotFound = lazy(() => import('../pages/NotFound'));
-
+const HiddenHome = lazy(() => import('../pages/HiddenHome'));
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -20,6 +20,7 @@ export const router = createBrowserRouter([
       { path: 'blog/:date/:slug', element: <BlogPostPage /> },
       { path: 'wall', element: <Wall /> },
       { path: 'contact', element: <Contact /> },
+      { path: 'hidden', element: <HiddenHome /> },
       { path: '*', element: <NotFound /> },
     ],
   },
