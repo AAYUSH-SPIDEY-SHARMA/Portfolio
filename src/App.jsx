@@ -7,6 +7,7 @@ import ScrollProgress from './components/layout/ScrollProgress';
 import ScrollToTop from './components/layout/ScrollToTop';
 import PreLoader from './components/animations/PreLoader';
 import EasterEggsSystem from './components/layout/EasterEggsSystem';
+import ChatOrb from './components/chatbot/ChatOrb';
 
 function App() {
   const location = useLocation();
@@ -46,6 +47,7 @@ function App() {
         </AnimatePresence>
         <Footer />
         <ScrollToTop />
+        <ChatOrb />
       </div>
     </>
   );
