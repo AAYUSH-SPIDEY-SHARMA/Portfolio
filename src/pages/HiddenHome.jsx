@@ -22,6 +22,9 @@ const HiddenHome = () => {
 
     // 2. Otherwise, scroll to top smoothly (or instantly) since they just navigated
     window.scrollTo({ top: 0, behavior: 'instant' });
+
+    // 3. Clear the state so a browser reload won't have it anymore
+    navigate('.', { replace: true, state: {} });
   }, [location, navigate]);
 
   return (
