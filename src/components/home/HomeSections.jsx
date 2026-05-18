@@ -171,7 +171,8 @@ export const SkillCloudSection = () => {
       const newClicks = cppClicks + 1;
       setCppClicks(newClicks);
       if (newClicks === 6) {
-        navigate('/hidden', { state: { triggered: true } });
+        sessionStorage.setItem('easterEggTriggered', 'true');
+        navigate('/hidden');
         setCppClicks(0); // reset in case they come back
       }
     } else {
