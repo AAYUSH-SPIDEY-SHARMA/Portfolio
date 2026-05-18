@@ -74,10 +74,25 @@ export function useChat() {
           content: data.message,
         }]);
       } else if (data.message) {
-        setMessages(prev => [...prev, {
-          role: 'assistant',
-          content: data.message,
-        }]);
+        // Split multi-message responses (separated by |||)
+        const parts = data.message.split('|||').map(p => p.trim()).filter(Boolean);
+
+        if (parts.length <= 1) {
+          // Single message — add immediately
+          setMessages(prev => [...prev, {
+            role: 'assistant',
+            content: data.message.replace(/\|\|\|/g, '').trim(),
+          }]);
+        } else {
+          // Multiple messages — stagger them like real texting
+          for (let i = 0; i < parts.length; i++) {
+            await new Promise(resolve => setTimeout(resolve, i === 0 ? 0 : 400));
+            setMessages(prev => [...prev, {
+              role: 'assistant',
+              content: parts[i],
+            }]);
+          }
+        }
       } else {
         throw new Error('No response from API');
       }
