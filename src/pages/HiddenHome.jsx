@@ -1,16 +1,32 @@
+import { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import PageWrapper from '../components/layout/PageWrapper';
-import Hero from '../components/Hero';
+import HiddenHero from '../components/hidden/HiddenHero';
 import {
   AboutMeSection,
   SkillCloudSection,
   ProjectShowcase,
   ConnectCTA,
-} from '../components/home/HomeSections';
+} from '../components/hidden/HiddenHomeSections';
 
 const HiddenHome = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // 1. If not triggered legitimately (e.g. browser reload or direct URL entry) -> boot to home
+    if (!location.state?.triggered) {
+      navigate('/', { replace: true });
+      return;
+    }
+
+    // 2. Otherwise, scroll to top smoothly (or instantly) since they just navigated
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [location, navigate]);
+
   return (
     <PageWrapper>
-      <Hero />
+      <HiddenHero />
       <AboutMeSection />
       <SkillCloudSection />
       <ProjectShowcase />

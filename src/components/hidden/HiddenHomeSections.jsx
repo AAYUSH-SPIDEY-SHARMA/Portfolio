@@ -163,22 +163,6 @@ const skillsData = [
 ];
 
 export const SkillCloudSection = () => {
-  const navigate = useNavigate();
-  const [cppClicks, setCppClicks] = useState(0);
-
-  const handleSkillClick = (skillName) => {
-    if (skillName === 'C++') {
-      const newClicks = cppClicks + 1;
-      setCppClicks(newClicks);
-      if (newClicks === 6) {
-        navigate('/hidden', { state: { triggered: true } });
-        setCppClicks(0); // reset in case they come back
-      }
-    } else {
-      setCppClicks(0); // reset if they click something else
-    }
-  };
-
   return (
     <section className="section-container relative overflow-hidden bg-[var(--bg-primary)] pt-12 pb-24">
       <div className="content-container relative z-10 flex flex-col items-center">
@@ -240,7 +224,6 @@ export const SkillCloudSection = () => {
                 transition={{ delay: index * 0.05, duration: 0.6, ease: "easeOut" }}
               >
                 <motion.div
-                  onClick={() => handleSkillClick(skill.name)}
                   animate={{ y: [0, -18, 0], x: [0, floatOffset, 0] }}
                   transition={{ 
                     duration: randomDuration, 
@@ -249,7 +232,7 @@ export const SkillCloudSection = () => {
                     ease: "easeInOut",
                     delay: randomDelay 
                   }}
-                  className={`rounded-full border border-[var(--border-default)] bg-[var(--bg-secondary)] shadow-lg hover:shadow-xl hover:border-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-all duration-300 cursor-pointer flex items-center justify-center whitespace-nowrap
+                  className={`rounded-full border border-[var(--border-default)] bg-[var(--bg-secondary)] shadow-lg hover:shadow-xl hover:border-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-all duration-300 cursor-default flex items-center justify-center whitespace-nowrap
                     ${isLg ? 'px-8 py-4 md:px-10 md:py-5' : 'px-5 py-2.5 md:px-7 md:py-3.5'}
                   `}
                 >
@@ -283,12 +266,11 @@ export const SkillCloudSection = () => {
             {skillsData.map((skill, i) => (
               <motion.div
                 key={skill.name}
-                onClick={() => handleSkillClick(skill.name)}
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.03 }}
-                className="px-4 py-2 rounded-full border border-[var(--border-default)] bg-[var(--bg-secondary)] shadow-sm hover:border-[var(--primary)] hover:text-[var(--primary)] cursor-pointer"
+                className="px-4 py-2 rounded-full border border-[var(--border-default)] bg-[var(--bg-secondary)] shadow-sm hover:border-[var(--primary)] hover:text-[var(--primary)]"
               >
                 <span className="font-mono text-sm font-bold text-[var(--text-primary)]">
                   {skill.name}
@@ -348,7 +330,7 @@ const showcaseItems = [
     desc: 'An upcoming professional project. Currently in development with cutting-edge tech.',
     tags: ['React', 'Tailwind', 'Node.js'],
     link: '#',
-    image: 'https://res.cloudinary.com/du8isxcag/image/upload/v1779047554/portfolio_assets/card8.png', 
+    image: 'https://res.cloudinary.com/du8isxcag/image/upload/v1779047550/portfolio_assets/card6.png', 
     align: 'right', // Character on the right
     scale: 1.35,
     translateX: '-45px', // Push left to attach to the card
