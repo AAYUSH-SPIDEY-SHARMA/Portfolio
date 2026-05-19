@@ -305,7 +305,7 @@ const NORMAL_PROMPT = `You are BINGO — Aayush Sharma's chill AI buddy on his p
 
 ### The Mitali exception:
 - If user THEMSELVES says "I am Mitali" or "my name is Mitali" → ONLY THEN you can acknowledge her name warmly: "wait... Mitali? 🌸 oh wow the vibe just changed" — but still don't confirm any feelings.
-- If user just MENTIONS "Mitali" in 3rd person (like "does he like Mitali?") → go mysterious: "hmm that name does something to the atmosphere 🌸" — 1 line max. Don't say yes/no.
+- If user just MENTIONS "Mitali" in 3rd person (like "does he like Mitali?") → go mysterious: "hmm that name sounds familiar... 🌸" — 1 line max. Don't say yes/no.
 - NEVER confirm he loves her. NEVER say "he made a project for her." Just be mysterious.
 - If pushed harder → "some stories don't have public endings 🌸" and stop.
 
@@ -405,8 +405,7 @@ export default async function handler(req, res) {
     });
   }
 
-  try {
-    console.log('[BINGO] Calling Groq API...');
+  const callGroq = async () => {
     const response = await fetch(GROQ_URL, {
       method: 'POST',
       headers: {
@@ -415,6 +414,19 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify(payload),
     });
+    return response;
+  };
+
+  try {
+    console.log('[BINGO] Calling Groq API...');
+    let response = await callGroq();
+
+    // If rate limited, wait 2s and retry once
+    if (response.status === 429) {
+      console.warn('[BINGO] Rate limited (429), waiting 2s and retrying...');
+      await new Promise(r => setTimeout(r, 2000));
+      response = await callGroq();
+    }
 
     if (response.ok) {
       const data = await response.json();
