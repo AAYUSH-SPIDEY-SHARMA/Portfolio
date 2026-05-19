@@ -72,8 +72,8 @@ const ChatOrb = () => {
         <div
           className="relative rounded-full flex items-center justify-center shadow-2xl overflow-hidden"
           style={{
-            width: '72px',
-            height: '72px',
+            width: '90px',
+            height: '90px',
             boxShadow: isWaifuMode
               ? '0 0 35px rgba(255,105,180,0.5), 0 8px 32px rgba(0,0,0,0.3)'
               : '0 0 35px rgba(108,92,231,0.5), 0 8px 32px rgba(0,0,0,0.3)',
