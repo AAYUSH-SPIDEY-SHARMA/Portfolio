@@ -1,12 +1,9 @@
 // ═══════════════════════════════════════════════════════════════
-// AayushAI — Vercel Serverless Function
-// Groq API with dual-key failover + rate limiting
+// BINGO — Vercel Serverless Function
+// Groq API + rate limiting
 // ═══════════════════════════════════════════════════════════════
 
-const GROQ_KEYS = [
-  process.env.GROQ_API_KEY_1,
-  process.env.GROQ_API_KEY_2,
-];
+const GROQ_KEY = process.env.GROQ_API_KEY_1;
 
 const MODEL = 'llama-3.3-70b-versatile';
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
@@ -402,56 +399,39 @@ export default async function handler(req, res) {
   };
 
   // Check key availability
-  const availableKeys = GROQ_KEYS.filter(Boolean);
-  console.log(`[BINGO] Available Groq keys: ${availableKeys.length}`);
-
-  if (availableKeys.length === 0) {
-    console.error('[BINGO] NO API KEYS FOUND. Set GROQ_API_KEY_1 and GROQ_API_KEY_2 in Vercel env vars.');
+  if (!GROQ_KEY) {
+    console.error('[BINGO] NO API KEY FOUND. Set GROQ_API_KEY_1 in Vercel env vars.');
     return res.status(200).json({
-      message: "My brain isn't connected yet 🧠 The admin needs to set up my API keys!",
+      message: "My brain isn't connected yet 🧠 The admin needs to set up my API key!",
     });
   }
 
-  // Try each key with failover
-  for (let i = 0; i < availableKeys.length; i++) {
-    const key = availableKeys[i];
+  try {
+    console.log('[BINGO] Calling Groq API...');
+    const response = await fetch(GROQ_URL, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${GROQ_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
 
-    try {
-      console.log(`[BINGO] Trying key ${i + 1}/${availableKeys.length}...`);
-      const response = await fetch(GROQ_URL, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${key}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
+    if (response.ok) {
+      const data = await response.json();
+      console.log('[BINGO] Success!');
+      return res.status(200).json({
+        message: data.choices[0].message.content,
       });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log(`[BINGO] Success with key ${i + 1}`);
-        return res.status(200).json({
-          message: data.choices[0].message.content,
-        });
-      }
-
-      // Rate limited on this key — try the next one
-      if (response.status === 429) {
-        console.warn(`[BINGO] Key ${i + 1} rate limited (429), trying next...`);
-        continue;
-      }
-
-      // Other API error — log the full response
-      const errorData = await response.text();
-      console.error(`[BINGO] Groq API error (${response.status}) with key ${i + 1}:`, errorData);
-      continue;
-    } catch (err) {
-      console.error(`[BINGO] Fetch error with key ${i + 1}:`, err.message);
-      continue;
     }
+
+    const errorData = await response.text();
+    console.error(`[BINGO] Groq API error (${response.status}):`, errorData);
+  } catch (err) {
+    console.error('[BINGO] Fetch error:', err.message);
   }
 
-  // Both keys failed — return graceful fallback
+  // API failed — return graceful fallback
   return res.status(200).json({
     message: getRandomFallback(),
   });
