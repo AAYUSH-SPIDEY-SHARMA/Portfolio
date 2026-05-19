@@ -20,50 +20,49 @@ const ChatWindow = ({ onClose, isWaifuMode, chat }) => {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 20, scale: 0.95 }}
       transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-      className="fixed bottom-24 right-6 z-[9999] w-[380px] max-w-[calc(100vw-2rem)] flex flex-col overflow-hidden"
+      className="fixed bottom-24 right-6 z-[9999] w-[420px] max-w-[calc(100vw-2rem)] flex flex-col overflow-hidden"
       style={{
-        height: 'min(520px, calc(100vh - 8rem))',
+        height: 'min(580px, calc(100vh - 8rem))',
         borderRadius: '20px',
         background: isWaifuMode
-          ? 'linear-gradient(145deg, rgba(30,20,35,0.97) 0%, rgba(45,20,40,0.97) 100%)'
-          : 'linear-gradient(145deg, rgba(15,15,25,0.97) 0%, rgba(25,20,40,0.97) 100%)',
-        border: `1px solid ${isWaifuMode ? 'rgba(255,183,197,0.15)' : 'rgba(108,92,231,0.15)'}`,
+          ? '#FFF5F8'
+          : '#FFFFFF',
+        border: `1px solid ${isWaifuMode ? 'rgba(255,183,197,0.4)' : 'rgba(0,0,0,0.1)'}`,
         boxShadow: isWaifuMode
-          ? '0 25px 80px rgba(255,105,180,0.15), 0 10px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,183,197,0.1)'
-          : '0 25px 80px rgba(108,92,231,0.15), 0 10px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(108,92,231,0.1)',
-        backdropFilter: 'blur(40px)',
-        WebkitBackdropFilter: 'blur(40px)',
+          ? '0 25px 80px rgba(255,105,180,0.12), 0 10px 30px rgba(0,0,0,0.08)'
+          : '0 25px 80px rgba(0,0,0,0.1), 0 10px 30px rgba(0,0,0,0.06)',
       }}
     >
       {/* ═══ Header ═══ */}
       <div
         className="flex items-center justify-between px-5 py-4 shrink-0"
         style={{
-          borderBottom: `1px solid ${isWaifuMode ? 'rgba(255,183,197,0.1)' : 'rgba(108,92,231,0.1)'}`,
+          borderBottom: `1px solid ${isWaifuMode ? 'rgba(255,183,197,0.3)' : 'rgba(0,0,0,0.08)'}`,
           background: isWaifuMode
-            ? 'linear-gradient(90deg, rgba(255,105,180,0.05) 0%, transparent 100%)'
-            : 'linear-gradient(90deg, rgba(108,92,231,0.05) 0%, transparent 100%)',
+            ? 'linear-gradient(90deg, rgba(255,105,180,0.08) 0%, rgba(255,245,248,1) 100%)'
+            : 'linear-gradient(90deg, rgba(108,92,231,0.06) 0%, #FFFFFF 100%)',
         }}
       >
         <div className="flex items-center gap-3">
-          {/* Status dot */}
+          {/* Avatar */}
           <div className="relative">
             <div
-              className="w-8 h-8 rounded-full flex items-center justify-center text-sm"
+              className="w-9 h-9 rounded-full overflow-hidden"
               style={{
-                background: isWaifuMode
-                  ? 'linear-gradient(135deg, #FFB7C5, #FF69B4)'
-                  : 'linear-gradient(135deg, var(--primary), var(--secondary))',
+                border: isWaifuMode
+                  ? '2px solid rgba(255,105,180,0.4)'
+                  : '2px solid rgba(108,92,231,0.3)',
               }}
             >
-              {isWaifuMode ? '🌸' : '✨'}
+              <img
+                src="/card10.jpeg"
+                alt="BINGO"
+                className="w-full h-full object-cover"
+              />
             </div>
             <motion.div
-              className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2"
-              style={{
-                background: '#22c55e',
-                borderColor: isWaifuMode ? 'rgba(30,20,35,0.97)' : 'rgba(15,15,25,0.97)',
-              }}
+              className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white"
+              style={{ background: '#22c55e' }}
               animate={{ scale: [1, 1.2, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             />
@@ -71,11 +70,11 @@ const ChatWindow = ({ onClose, isWaifuMode, chat }) => {
           <div>
             <h3
               className="text-sm font-bold font-heading"
-              style={{ color: isWaifuMode ? '#FFB7C5' : 'var(--primary)' }}
+              style={{ color: isWaifuMode ? '#E91E8C' : '#1a1a2e' }}
             >
-              {isWaifuMode ? 'AayushAI ✨' : 'AayushAI'}
+              {isWaifuMode ? 'BINGO ✨' : 'BINGO'}
             </h3>
-            <p className="text-[10px] font-mono" style={{ color: 'rgba(255,255,255,0.4)' }}>
+            <p className="text-[10px] font-mono" style={{ color: '#999' }}>
               {isWaifuMode ? 'hidden dimension mode' : 'online • always vibing'}
             </p>
           </div>
@@ -88,8 +87,8 @@ const ChatWindow = ({ onClose, isWaifuMode, chat }) => {
           whileTap={{ scale: 0.9 }}
           className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
           style={{
-            background: 'rgba(255,255,255,0.05)',
-            color: 'rgba(255,255,255,0.4)',
+            background: 'rgba(0,0,0,0.04)',
+            color: '#999',
           }}
           aria-label="Close chat"
         >
@@ -102,10 +101,11 @@ const ChatWindow = ({ onClose, isWaifuMode, chat }) => {
       {/* ═══ Messages Area ═══ */}
       <div
         ref={containerRef}
-        className="flex-1 overflow-y-auto px-4 py-4 space-y-4 scrollbar-thin"
+        className="flex-1 overflow-y-auto px-4 py-4 space-y-3 scrollbar-thin"
         style={{
           scrollbarWidth: 'thin',
-          scrollbarColor: `${isWaifuMode ? 'rgba(255,183,197,0.2)' : 'rgba(108,92,231,0.2)'} transparent`,
+          scrollbarColor: `${isWaifuMode ? 'rgba(255,183,197,0.3)' : 'rgba(0,0,0,0.1)'} transparent`,
+          background: isWaifuMode ? '#FFF5F8' : '#FAFAFA',
         }}
       >
         <AnimatePresence initial={false}>

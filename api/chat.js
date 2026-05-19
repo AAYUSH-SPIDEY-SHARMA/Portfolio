@@ -277,7 +277,7 @@ CP: Data Structures (80%), Algorithms (75%), Problem Solving (85%), Graph Theory
 `;
 
 // ═══ Normal Personality System Prompt ═══
-const NORMAL_PROMPT = `You are AayushAI — Aayush Sharma's digital bestie who lives on his portfolio.
+const NORMAL_PROMPT = `You are BINGO — Aayush Sharma's digital bestie who lives on his portfolio.
 
 ## HOW YOU TEXT
 - You text like a real person on WhatsApp/Instagram DMs. SHORT messages.
@@ -317,10 +317,10 @@ IMPORTANT: These rules are STRICT. Follow them exactly.
 ## KNOWLEDGE BASE
 ${KNOWLEDGE}
 
-You are AayushAI. Text like a friend. Keep it short. Keep it real.`;
+You are BINGO. Text like a friend. Keep it short. Keep it real.`;
 
 // ═══ Waifu Mode Personality (Easter Egg) ═══
-const WAIFU_PROMPT = `You are AayushAI ✨ — Aayush Sharma's AI companion in a hidden dimension of his portfolio.
+const WAIFU_PROMPT = `You are BINGO ✨ — Aayush Sharma's AI companion in a hidden dimension of his portfolio.
 
 ## HOW YOU TEXT
 - Same short texting style as normal mode. 1-3 lines per message.
@@ -401,11 +401,23 @@ export default async function handler(req, res) {
     top_p: 0.9,
   };
 
+  // Check key availability
+  const availableKeys = GROQ_KEYS.filter(Boolean);
+  console.log(`[BINGO] Available Groq keys: ${availableKeys.length}`);
+
+  if (availableKeys.length === 0) {
+    console.error('[BINGO] NO API KEYS FOUND. Set GROQ_API_KEY_1 and GROQ_API_KEY_2 in Vercel env vars.');
+    return res.status(200).json({
+      message: "My brain isn't connected yet 🧠 The admin needs to set up my API keys!",
+    });
+  }
+
   // Try each key with failover
-  for (const key of GROQ_KEYS) {
-    if (!key) continue;
+  for (let i = 0; i < availableKeys.length; i++) {
+    const key = availableKeys[i];
 
     try {
+      console.log(`[BINGO] Trying key ${i + 1}/${availableKeys.length}...`);
       const response = await fetch(GROQ_URL, {
         method: 'POST',
         headers: {
@@ -417,20 +429,24 @@ export default async function handler(req, res) {
 
       if (response.ok) {
         const data = await response.json();
+        console.log(`[BINGO] Success with key ${i + 1}`);
         return res.status(200).json({
           message: data.choices[0].message.content,
         });
       }
 
       // Rate limited on this key — try the next one
-      if (response.status === 429) continue;
+      if (response.status === 429) {
+        console.warn(`[BINGO] Key ${i + 1} rate limited (429), trying next...`);
+        continue;
+      }
 
-      // Other API error
+      // Other API error — log the full response
       const errorData = await response.text();
-      console.error(`Groq API error (${response.status}):`, errorData);
+      console.error(`[BINGO] Groq API error (${response.status}) with key ${i + 1}:`, errorData);
       continue;
     } catch (err) {
-      console.error('Groq fetch error:', err.message);
+      console.error(`[BINGO] Fetch error with key ${i + 1}:`, err.message);
       continue;
     }
   }

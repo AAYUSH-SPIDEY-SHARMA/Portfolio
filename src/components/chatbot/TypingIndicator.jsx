@@ -13,14 +13,14 @@ const TypingIndicator = ({ isWaifuMode }) => {
       <div
         className="flex items-center gap-3 px-4 py-3 rounded-2xl rounded-bl-md"
         style={{
-          background: isWaifuMode ? 'rgba(255,183,197,0.08)' : 'rgba(108,92,231,0.08)',
-          border: `1px solid ${isWaifuMode ? 'rgba(255,183,197,0.1)' : 'rgba(108,92,231,0.1)'}`,
+          background: isWaifuMode ? 'rgba(255,183,197,0.12)' : '#F0EEFF',
+          border: `1px solid ${isWaifuMode ? 'rgba(255,183,197,0.3)' : 'rgba(108,92,231,0.15)'}`,
         }}
       >
         {/* Thinking text */}
         <motion.span
           className="text-[11px] font-mono"
-          style={{ color: 'rgba(255,255,255,0.3)' }}
+          style={{ color: '#999' }}
           animate={{ opacity: [0.3, 0.7, 0.3] }}
           transition={{ duration: 2, repeat: Infinity }}
         >

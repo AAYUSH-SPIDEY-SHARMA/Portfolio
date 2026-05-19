@@ -3,12 +3,12 @@ import { useLocation } from 'react-router-dom';
 
 const GREETING = {
   role: 'assistant',
-  content: "Hii! I'm AayushAI ✨ — wanna know about Aayush, his projects, skills, or literally anything? Ask away, I'm your friend here 😄",
+  content: "Hii! I'm BINGO ✨ — wanna know about Aayush, his projects, skills, or literally anything? Ask away, I'm your friend here 😄",
 };
 
 const WAIFU_GREETING = {
   role: 'assistant',
-  content: "Ara ara~ welcome to the hidden dimension 🌸 Not everyone finds their way here. I'm AayushAI — ask me anything about Aayush-kun, his projects, or this secret world ✨",
+  content: "Ara ara~ welcome to the hidden dimension 🌸 Not everyone finds their way here. I'm BINGO — ask me anything about Aayush-kun, his projects, or this secret world ✨",
 };
 
 const SESSION_LIMIT = 30; // max messages per session

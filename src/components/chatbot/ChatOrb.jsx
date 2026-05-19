@@ -30,7 +30,7 @@ const ChatOrb = () => {
         initial={{ opacity: 0, scale: 0, y: 40 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ delay: 1.5, type: 'spring', stiffness: 200 }}
-        aria-label="Open AayushAI Chat"
+        aria-label="Open BINGO Chat"
       >
         {/* Outer Glow Ring */}
         <motion.div
@@ -68,64 +68,54 @@ const ChatOrb = () => {
           }}
         />
 
-        {/* Main Orb */}
+        {/* Main Orb — card10 image */}
         <div
-          className="relative w-14 h-14 rounded-full flex items-center justify-center shadow-2xl overflow-hidden"
+          className="relative w-16 h-16 rounded-full flex items-center justify-center shadow-2xl overflow-hidden"
           style={{
-            background: isWaifuMode
-              ? 'linear-gradient(135deg, #FFB7C5 0%, #FF69B4 50%, #FF1493 100%)'
-              : 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, #4F46E5 100%)',
             boxShadow: isWaifuMode
               ? '0 0 30px rgba(255,105,180,0.4), 0 8px 32px rgba(0,0,0,0.3)'
               : '0 0 30px rgba(108,92,231,0.4), 0 8px 32px rgba(0,0,0,0.3)',
+            border: isWaifuMode
+              ? '2px solid rgba(255,183,197,0.4)'
+              : '2px solid rgba(108,92,231,0.4)',
           }}
         >
-          {/* Animated inner glow */}
-          <motion.div
-            className="absolute inset-0 rounded-full"
-            style={{
-              background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3) 0%, transparent 60%)',
-            }}
-            animate={{
-              opacity: [0.4, 0.8, 0.4],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-          />
-
-          {/* Icon */}
+          {/* Show X icon when open, otherwise show card10 image */}
           <AnimatePresence mode="wait">
             {isOpen ? (
-              <motion.svg
+              <motion.div
                 key="close"
                 initial={{ rotate: -90, opacity: 0 }}
                 animate={{ rotate: 0, opacity: 1 }}
                 exit={{ rotate: 90, opacity: 0 }}
-                className="w-6 h-6 text-white relative z-10"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2.5}
+                className="absolute inset-0 flex items-center justify-center"
+                style={{
+                  background: isWaifuMode
+                    ? 'linear-gradient(135deg, #FFB7C5 0%, #FF69B4 50%, #FF1493 100%)'
+                    : 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, #4F46E5 100%)',
+                }}
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </motion.svg>
+                <svg
+                  className="w-6 h-6 text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2.5}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </motion.div>
             ) : (
-              <motion.svg
-                key="chat"
+              <motion.img
+                key="avatar"
+                src="/card10.jpeg"
+                alt="BINGO"
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0, opacity: 0 }}
-                className="w-6 h-6 text-white relative z-10"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </motion.svg>
+                className="w-full h-full object-cover"
+                draggable={false}
+              />
             )}
           </AnimatePresence>
         </div>
@@ -142,7 +132,7 @@ const ChatOrb = () => {
           animate={{ opacity: isOpen ? 0 : 1, y: isOpen ? 5 : 0 }}
           transition={{ delay: 3 }}
         >
-          {isWaifuMode ? 'AayushAI ✨' : 'AayushAI'}
+          {isWaifuMode ? 'BINGO ✨' : 'BINGO'}
         </motion.span>
       </motion.button>
     </>

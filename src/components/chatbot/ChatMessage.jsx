@@ -27,10 +27,10 @@ const ChatMessage = ({ message, isWaifuMode }) => {
               }
             : {
                 background: isWaifuMode
-                  ? 'rgba(255,183,197,0.08)'
-                  : 'rgba(108,92,231,0.08)',
-                color: 'rgba(255,255,255,0.85)',
-                border: `1px solid ${isWaifuMode ? 'rgba(255,183,197,0.1)' : 'rgba(108,92,231,0.1)'}`,
+                  ? 'rgba(255,183,197,0.12)'
+                  : '#F0EEFF',
+                color: '#333',
+                border: `1px solid ${isWaifuMode ? 'rgba(255,183,197,0.3)' : 'rgba(108,92,231,0.15)'}`,
               }
         }
       >

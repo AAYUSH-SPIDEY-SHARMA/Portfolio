@@ -16,10 +16,8 @@ const ChatInput = ({ onSend, isLoading, isWaifuMode }) => {
       onSubmit={handleSubmit}
       className="flex items-center gap-2 px-4 py-3 shrink-0"
       style={{
-        borderTop: `1px solid ${isWaifuMode ? 'rgba(255,183,197,0.1)' : 'rgba(108,92,231,0.1)'}`,
-        background: isWaifuMode
-          ? 'rgba(255,183,197,0.02)'
-          : 'rgba(108,92,231,0.02)',
+        borderTop: `1px solid ${isWaifuMode ? 'rgba(255,183,197,0.2)' : 'rgba(0,0,0,0.08)'}`,
+        background: isWaifuMode ? '#FFF5F8' : '#FFFFFF',
       }}
     >
       <input
@@ -28,11 +26,12 @@ const ChatInput = ({ onSend, isLoading, isWaifuMode }) => {
         onChange={(e) => setInput(e.target.value)}
         placeholder={isWaifuMode ? 'Ask me anything~' : 'Ask me anything...'}
         disabled={isLoading}
-        className="flex-1 px-4 py-2.5 rounded-xl text-[13px] font-body outline-none transition-all duration-300 placeholder:text-white/20"
+        className="flex-1 px-4 py-2.5 rounded-xl text-[13px] font-body outline-none transition-all duration-300"
         style={{
-          background: isWaifuMode ? 'rgba(255,183,197,0.06)' : 'rgba(108,92,231,0.06)',
-          border: `1px solid ${isWaifuMode ? 'rgba(255,183,197,0.12)' : 'rgba(108,92,231,0.12)'}`,
-          color: 'rgba(255,255,255,0.85)',
+          background: isWaifuMode ? 'rgba(255,183,197,0.08)' : '#F5F5F5',
+          border: `1px solid ${isWaifuMode ? 'rgba(255,183,197,0.2)' : 'rgba(0,0,0,0.1)'}`,
+          color: '#333',
+          '::placeholder': { color: '#aaa' },
         }}
         onFocus={(e) => {
           e.target.style.borderColor = isWaifuMode ? 'rgba(255,183,197,0.3)' : 'rgba(108,92,231,0.3)';
@@ -58,7 +57,7 @@ const ChatInput = ({ onSend, isLoading, isWaifuMode }) => {
             ? isWaifuMode
               ? 'linear-gradient(135deg, #FF69B4, #FF1493)'
               : 'linear-gradient(135deg, var(--primary), var(--secondary))'
-            : 'rgba(255,255,255,0.05)',
+            : 'rgba(0,0,0,0.04)',
           boxShadow: input.trim()
             ? isWaifuMode
               ? '0 4px 15px rgba(255,105,180,0.3)'
@@ -70,7 +69,7 @@ const ChatInput = ({ onSend, isLoading, isWaifuMode }) => {
           className="w-4 h-4"
           fill="none"
           viewBox="0 0 24 24"
-          stroke={input.trim() ? 'white' : 'rgba(255,255,255,0.2)'}
+          stroke={input.trim() ? 'white' : 'rgba(0,0,0,0.2)'}
           strokeWidth={2.5}
         >
           <path
