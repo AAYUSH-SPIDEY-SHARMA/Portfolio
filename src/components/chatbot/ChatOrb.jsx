@@ -110,7 +110,7 @@ const ChatOrb = () => {
             ) : (
               <motion.img
                 key="avatar"
-                src="/card11.jpeg"
+                src="/favicon.png"
                 alt="BINGO"
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}

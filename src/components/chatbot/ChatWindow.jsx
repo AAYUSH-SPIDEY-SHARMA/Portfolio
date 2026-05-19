@@ -55,7 +55,7 @@ const ChatWindow = ({ onClose, isWaifuMode, chat }) => {
               }}
             >
               <img
-                src="/card11.jpeg"
+                src="/favicon.png"
                 alt="BINGO"
                 className="w-full h-full object-cover"
               />
