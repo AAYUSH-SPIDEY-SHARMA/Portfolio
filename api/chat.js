@@ -5,7 +5,7 @@
 
 const GROQ_KEY = process.env.GROQ_API_KEY_1;
 
-const MODEL = 'llama-3.1-8b-instant';
+const MODEL = 'llama-3.3-70b-versatile';
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 // ═══ In-memory rate limiter (resets per cold start) ═══
