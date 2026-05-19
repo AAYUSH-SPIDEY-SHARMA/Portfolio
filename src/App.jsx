@@ -4,7 +4,6 @@ import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import ScrollProgress from './components/layout/ScrollProgress';
-import ScrollToTop from './components/layout/ScrollToTop';
 import PreLoader from './components/animations/PreLoader';
 import EasterEggsSystem from './components/layout/EasterEggsSystem';
 import ChatOrb from './components/chatbot/ChatOrb';
@@ -46,7 +45,6 @@ function App() {
           </Suspense>
         </AnimatePresence>
         <Footer />
-        <ScrollToTop />
         <ChatOrb />
       </div>
     </>
