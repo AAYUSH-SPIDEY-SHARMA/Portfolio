@@ -70,14 +70,16 @@ const ChatOrb = () => {
 
         {/* Main Orb — card10 image */}
         <div
-          className="relative w-16 h-16 rounded-full flex items-center justify-center shadow-2xl overflow-hidden"
+          className="relative rounded-full flex items-center justify-center shadow-2xl overflow-hidden"
           style={{
+            width: '72px',
+            height: '72px',
             boxShadow: isWaifuMode
-              ? '0 0 30px rgba(255,105,180,0.4), 0 8px 32px rgba(0,0,0,0.3)'
-              : '0 0 30px rgba(108,92,231,0.4), 0 8px 32px rgba(0,0,0,0.3)',
+              ? '0 0 35px rgba(255,105,180,0.5), 0 8px 32px rgba(0,0,0,0.3)'
+              : '0 0 35px rgba(108,92,231,0.5), 0 8px 32px rgba(0,0,0,0.3)',
             border: isWaifuMode
-              ? '2px solid rgba(255,183,197,0.4)'
-              : '2px solid rgba(108,92,231,0.4)',
+              ? '3px solid rgba(255,183,197,0.6)'
+              : '3px solid rgba(108,92,231,0.5)',
           }}
         >
           {/* Show X icon when open, otherwise show card10 image */}
@@ -96,7 +98,7 @@ const ChatOrb = () => {
                 }}
               >
                 <svg
-                  className="w-6 h-6 text-white"
+                  className="w-7 h-7 text-white"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -113,7 +115,12 @@ const ChatOrb = () => {
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0, opacity: 0 }}
-                className="w-full h-full object-cover"
+                className="w-full h-full"
+                style={{
+                  objectFit: 'cover',
+                  objectPosition: 'center 20%',
+                  imageRendering: 'auto',
+                }}
                 draggable={false}
               />
             )}
