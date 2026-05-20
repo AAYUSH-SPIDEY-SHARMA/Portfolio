@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 const pageVariants = {
@@ -15,6 +16,10 @@ const pageVariants = {
 };
 
 const PageWrapper = ({ children, className = '' }) => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <motion.div
       className={`page-wrapper ${className}`}
