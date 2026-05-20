@@ -23,9 +23,6 @@ const HiddenHome = () => {
 
     // 2. Scroll to top immediately
     window.scrollTo({ top: 0, behavior: 'instant' });
-
-    // 3. Clear the sessionStorage so a future hard reload will fail this check
-    sessionStorage.removeItem('easterEggTriggered');
   }, [navigate]);
 
   return (
