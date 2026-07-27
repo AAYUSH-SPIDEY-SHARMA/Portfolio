@@ -1,8 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+
+const MAX_LENGTH = 1000;
 
 const ChatInput = ({ onSend, isLoading, isWaifuMode }) => {
   const [input, setInput] = useState('');
+  const inputRef = useRef(null);
+
+  // Land the caret in the field as soon as the panel opens.
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -20,18 +28,22 @@ const ChatInput = ({ onSend, isLoading, isWaifuMode }) => {
         background: isWaifuMode ? '#FFF5F8' : '#FFFFFF',
       }}
     >
+      <label htmlFor="bingo-input" className="sr-only">Message BINGO</label>
       <input
+        id="bingo-input"
+        ref={inputRef}
         type="text"
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder={isWaifuMode ? 'Ask me anything~' : 'Ask me anything...'}
         disabled={isLoading}
+        maxLength={MAX_LENGTH}
+        autoComplete="off"
         className="flex-1 px-4 py-2.5 rounded-xl text-[13px] font-body outline-none transition-all duration-300"
         style={{
           background: isWaifuMode ? 'rgba(255,183,197,0.08)' : '#F5F5F5',
           border: `1px solid ${isWaifuMode ? 'rgba(255,183,197,0.2)' : 'rgba(0,0,0,0.1)'}`,
           color: '#333',
-          '::placeholder': { color: '#aaa' },
         }}
         onFocus={(e) => {
           e.target.style.borderColor = isWaifuMode ? 'rgba(255,183,197,0.3)' : 'rgba(108,92,231,0.3)';
@@ -51,6 +63,7 @@ const ChatInput = ({ onSend, isLoading, isWaifuMode }) => {
         disabled={!input.trim() || isLoading}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
+        aria-label="Send message"
         className="w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 shrink-0 disabled:opacity-30 disabled:cursor-not-allowed"
         style={{
           background: input.trim()

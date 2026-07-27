@@ -1,49 +1,63 @@
 import { Suspense, useState, useCallback } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
+import { Outlet } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import ScrollProgress from './components/layout/ScrollProgress';
+import ErrorBoundary from './components/layout/ErrorBoundary';
 import PreLoader from './components/animations/PreLoader';
 import EasterEggsSystem from './components/layout/EasterEggsSystem';
 import ChatOrb from './components/chatbot/ChatOrb';
 
+const RouteFallback = () => (
+  <div className="min-h-screen flex items-center justify-center" role="status" aria-label="Loading page">
+    <div className="dot-pulse flex gap-2">
+      <span className="w-3 h-3 rounded-full bg-[var(--primary)]" />
+      <span className="w-3 h-3 rounded-full bg-[var(--secondary)]" />
+      <span className="w-3 h-3 rounded-full bg-[var(--accent-coral)]" />
+    </div>
+  </div>
+);
+
 function App() {
-  const location = useLocation();
   const [isLoaded, setIsLoaded] = useState(
     () => sessionStorage.getItem('preloader-seen') === 'true'
   );
 
-  const handlePreloaderComplete = useCallback(() => {
-    setIsLoaded(true);
-  }, []);
+  const handlePreloaderComplete = useCallback(() => setIsLoaded(true), []);
 
   return (
     <>
-      {/* PreLoader — only on first visit */}
+      {/* PreLoader — first visit of the session only */}
       {!isLoaded && <PreLoader onComplete={handlePreloaderComplete} />}
 
-      {/* Global Easter Eggs */}
       <EasterEggsSystem />
 
-      <div className={`min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] ${!isLoaded ? 'opacity-0' : 'opacity-100 transition-opacity duration-500'}`}>
+      <div
+        className={`min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] transition-opacity duration-500 ${
+          isLoaded ? 'opacity-100' : 'opacity-0'
+        }`}
+      >
+        <a href="#main" className="skip-link">Skip to content</a>
+
         <ScrollProgress />
         <Navbar />
-        <AnimatePresence mode="wait">
-          <Suspense
-            fallback={
-              <div className="min-h-screen flex items-center justify-center">
-                <div className="dot-pulse flex gap-2">
-                  <span className="w-3 h-3 rounded-full bg-[var(--primary)]" />
-                  <span className="w-3 h-3 rounded-full bg-[var(--secondary)]" />
-                  <span className="w-3 h-3 rounded-full bg-[var(--accent-coral)]" />
-                </div>
-              </div>
-            }
-          >
-            <Outlet key={location.pathname} />
-          </Suspense>
-        </AnimatePresence>
+
+        {/*
+          Pages animate in via PageWrapper. There is deliberately no
+          AnimatePresence exit animation here: with a data router, an exiting
+          subtree still reads the *current* RouterContext, so <Outlet/> inside a
+          retained child renders the incoming page — the previous wrapper
+          animated the wrong thing and, because the key sat on <Outlet/> rather
+          than on AnimatePresence's direct child, never ran at all.
+        */}
+        <main id="main" tabIndex={-1}>
+          <ErrorBoundary>
+            <Suspense fallback={<RouteFallback />}>
+              <Outlet />
+            </Suspense>
+          </ErrorBoundary>
+        </main>
+
         <Footer />
         <ChatOrb />
       </div>

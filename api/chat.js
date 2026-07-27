@@ -8,13 +8,81 @@ const GROQ_KEY = process.env.GROQ_API_KEY_1;
 const MODEL = 'llama-3.3-70b-versatile';
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
-// ═══ In-memory rate limiter (resets per cold start) ═══
+// ═══ Allowed origins ═══
+// This endpoint spends a real API budget, so it is not open to the world.
+// Set ALLOWED_ORIGIN in Vercel to add a custom domain.
+const ALLOWED_ORIGINS = [
+  'https://aayushsharma.me',
+  'https://www.aayushsharma.me',
+  process.env.ALLOWED_ORIGIN,
+  ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : []),
+  ...(process.env.NODE_ENV !== 'production'
+    ? ['http://localhost:5173', 'http://localhost:4173', 'http://127.0.0.1:5173']
+    : []),
+].filter(Boolean);
+
+function resolveOrigin(req) {
+  const origin = req.headers.origin;
+  // Same-origin browser requests send no Origin header — always allow those.
+  if (!origin) return { allowed: true, value: null };
+  if (ALLOWED_ORIGINS.includes(origin)) return { allowed: true, value: origin };
+  // Vercel preview deployments.
+  if (/^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(origin)) return { allowed: true, value: origin };
+  return { allowed: false, value: null };
+}
+
+// ═══ Input limits ═══
+const MAX_MESSAGES = 40;
+const MAX_CHARS_PER_MESSAGE = 2000;
+const MAX_TOTAL_CHARS = 12000;
+
+/**
+ * Accept only what the model needs: an array of {role, content} where role is
+ * user/assistant. A caller cannot smuggle in their own `system` turn and
+ * override the personality, and cannot send unbounded text.
+ */
+function sanitizeMessages(raw) {
+  if (!Array.isArray(raw)) return { error: 'Messages array is required' };
+
+  const cleaned = [];
+  let total = 0;
+
+  for (const m of raw.slice(-MAX_MESSAGES)) {
+    if (!m || typeof m !== 'object') continue;
+    if (m.role !== 'user' && m.role !== 'assistant') continue;
+    if (typeof m.content !== 'string') continue;
+
+    const content = m.content.trim().slice(0, MAX_CHARS_PER_MESSAGE);
+    if (!content) continue;
+
+    total += content.length;
+    if (total > MAX_TOTAL_CHARS) break;
+
+    cleaned.push({ role: m.role, content });
+  }
+
+  if (cleaned.length === 0) return { error: 'No valid messages provided' };
+  return { messages: cleaned };
+}
+
+// ═══ In-memory rate limiter ═══
+// Best-effort only: Vercel may run several instances, and the map resets on
+// cold start. It blunts casual abuse; it is not a hard ceiling.
 const rateLimitMap = new Map();
 const RATE_LIMIT_WINDOW_MS = 60_000; // 1 minute
 const MAX_REQUESTS_PER_WINDOW = 15;
+const MAX_TRACKED_IPS = 5000;
 
 function isRateLimited(ip) {
   const now = Date.now();
+
+  // Bound memory: drop expired entries once the map grows large.
+  if (rateLimitMap.size > MAX_TRACKED_IPS) {
+    for (const [key, entry] of rateLimitMap) {
+      if (now - entry.windowStart > RATE_LIMIT_WINDOW_MS) rateLimitMap.delete(key);
+    }
+  }
+
   const entry = rateLimitMap.get(ip);
 
   if (!entry || now - entry.windowStart > RATE_LIMIT_WINDOW_MS) {
@@ -23,8 +91,7 @@ function isRateLimited(ip) {
   }
 
   entry.count++;
-  if (entry.count > MAX_REQUESTS_PER_WINDOW) return true;
-  return false;
+  return entry.count > MAX_REQUESTS_PER_WINDOW;
 }
 
 // ═══ Knowledge Base — Compressed for token efficiency ═══
@@ -143,18 +210,48 @@ function getRandomFallback() {
   return FALLBACKS[Math.floor(Math.random() * FALLBACKS.length)];
 }
 
+function safeParse(raw) {
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+/** Abort the upstream call rather than letting the function hang to its limit. */
+async function fetchWithTimeout(url, options, ms = 20_000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 // ═══ Main Handler ═══
 export default async function handler(req, res) {
-  // CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  const origin = resolveOrigin(req);
+
+  res.setHeader('Vary', 'Origin');
+  if (origin.value) res.setHeader('Access-Control-Allow-Origin', origin.value);
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (!origin.allowed) {
+    return res.status(403).json({ error: 'Origin not allowed' });
+  }
+
+  if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  // Rate limiting
-  const ip = req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || 'unknown';
+  // Rate limiting — take the first hop of x-forwarded-for, not the whole chain.
+  const forwarded = req.headers['x-forwarded-for'];
+  const ip =
+    (typeof forwarded === 'string' ? forwarded.split(',')[0].trim() : null) ||
+    req.headers['x-real-ip'] ||
+    'unknown';
+
   if (isRateLimited(ip)) {
     return res.status(200).json({
       message: "Whoa slow down there 😤 I can only think so fast! Give me a minute and try again.",
@@ -162,22 +259,23 @@ export default async function handler(req, res) {
     });
   }
 
-  const { messages, mode } = req.body;
-
-  if (!messages || !Array.isArray(messages)) {
-    return res.status(400).json({ error: 'Messages array is required' });
+  const body = typeof req.body === 'string' ? safeParse(req.body) : req.body;
+  if (!body || typeof body !== 'object') {
+    return res.status(400).json({ error: 'Invalid request body' });
   }
 
-  // Select personality based on mode
-  const systemPrompt = mode === 'waifu' ? WAIFU_PROMPT : NORMAL_PROMPT;
+  const { messages: sanitized, error } = sanitizeMessages(body.messages);
+  if (error) return res.status(400).json({ error });
 
-  // Build message payload (keep last 10 messages for context window management)
-  const trimmedMessages = messages.slice(-10);
+  // Personality is chosen server-side from a fixed set — the client sends a
+  // mode label, never prompt text.
+  const systemPrompt = body.mode === 'waifu' ? WAIFU_PROMPT : NORMAL_PROMPT;
+
   const payload = {
     model: MODEL,
     messages: [
       { role: 'system', content: systemPrompt },
-      ...trimmedMessages,
+      ...sanitized.slice(-10), // keep the context window small
     ],
     temperature: 0.9,
     max_tokens: 300,
@@ -192,8 +290,8 @@ export default async function handler(req, res) {
     });
   }
 
-  const callGroq = async () => {
-    const response = await fetch(GROQ_URL, {
+  const callGroq = () =>
+    fetchWithTimeout(GROQ_URL, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${GROQ_KEY}`,
@@ -201,32 +299,27 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify(payload),
     });
-    return response;
-  };
 
   try {
-    console.log('[BINGO] Calling Groq API...');
     let response = await callGroq();
 
-    // If rate limited, wait 2s and retry once
+    // Upstream rate limit — back off once before giving up.
     if (response.status === 429) {
-      console.warn('[BINGO] Rate limited (429), waiting 2s and retrying...');
-      await new Promise(r => setTimeout(r, 2000));
+      console.warn('[BINGO] Groq rate limited (429), retrying in 2s');
+      await new Promise((r) => setTimeout(r, 2000));
       response = await callGroq();
     }
 
     if (response.ok) {
       const data = await response.json();
-      console.log('[BINGO] Success!');
-      return res.status(200).json({
-        message: data.choices[0].message.content,
-      });
+      const content = data?.choices?.[0]?.message?.content;
+      if (content) return res.status(200).json({ message: content });
+      console.error('[BINGO] Groq returned no content');
+    } else {
+      console.error(`[BINGO] Groq API error (${response.status}):`, await response.text());
     }
-
-    const errorData = await response.text();
-    console.error(`[BINGO] Groq API error (${response.status}):`, errorData);
   } catch (err) {
-    console.error('[BINGO] Fetch error:', err.message);
+    console.error('[BINGO] Fetch error:', err.name === 'AbortError' ? 'timed out' : err.message);
   }
 
   // API failed — return graceful fallback

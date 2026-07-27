@@ -14,12 +14,21 @@ const ChatWindow = ({ onClose, isWaifuMode, chat }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
 
+  // Escape closes the panel.
+  useEffect(() => {
+    const onKeyDown = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [onClose]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 20, scale: 0.95 }}
       transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+      role="dialog"
+      aria-label="Chat with BINGO"
       className="fixed bottom-24 right-6 z-[9999] w-[420px] max-w-[calc(100vw-2rem)] flex flex-col overflow-hidden"
       style={{
         height: 'min(580px, calc(100vh - 8rem))',
@@ -101,6 +110,9 @@ const ChatWindow = ({ onClose, isWaifuMode, chat }) => {
       {/* ═══ Messages Area ═══ */}
       <div
         ref={containerRef}
+        role="log"
+        aria-live="polite"
+        aria-label="Conversation"
         className="flex-1 overflow-y-auto px-4 py-4 space-y-3 scrollbar-thin"
         style={{
           scrollbarWidth: 'thin',

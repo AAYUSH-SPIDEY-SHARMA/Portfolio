@@ -1,10 +1,10 @@
 import { motion } from 'framer-motion';
 import { moodColors } from './constants';
 import { Link } from 'react-router-dom';
+import { postPath } from '../../lib/slug';
 
 const BlogCard = ({ post, index, isFeatured }) => {
   const mood = moodColors[post.mood] || moodColors.productive;
-  const slug = post.slug || post.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
 
   return (
     <motion.div
@@ -14,7 +14,7 @@ const BlogCard = ({ post, index, isFeatured }) => {
       transition={{ delay: index * 0.1, duration: 1, ease: [0.16, 1, 0.3, 1] }}
       className={`relative group cursor-pointer w-full h-full ${isFeatured ? 'min-h-[400px]' : 'min-h-[300px]'}`}
     >
-      <Link to={`/blog/${post.dateSlug || post.date.replace(/[^a-z0-9]+/gi, '-')}/${slug}`} className="block h-full outline-none">
+      <Link to={postPath(post)} className="block h-full outline-none">
         {/* Layered Glass Background */}
         <div className="absolute inset-0 bg-white/70 backdrop-blur-2xl rounded-[1.5rem] border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.03)] group-hover:shadow-[0_20px_40px_rgb(0,0,0,0.06)] group-hover:-translate-y-2 transition-all duration-700 ease-out z-0 overflow-hidden">
           {/* Subtle mood ambient lighting */}

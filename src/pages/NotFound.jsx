@@ -1,8 +1,9 @@
 import PageWrapper from '../components/layout/PageWrapper';
+import Seo from '../components/Seo';
 import { motion } from 'framer-motion';
-import { Home, Ghost, ArrowLeft, Zap } from 'lucide-react';
+import { Home, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import GlitchText from '../components/animations/GlitchText';
 
 const spiderQuotes = [
@@ -32,6 +33,12 @@ const NotFound = () => {
 
   return (
     <PageWrapper>
+      <Seo
+        title="404 — Page Not Found"
+        description="This dimension doesn't exist. Head back to the portfolio."
+        path="/404"
+        noIndex
+      />
       <section
         ref={containerRef}
         onClick={handleClick}
@@ -111,10 +118,10 @@ const NotFound = () => {
 
           {/* Quote */}
           <p className="text-lg text-[var(--text-secondary)] italic mb-2 max-w-md mx-auto" style={{ fontFamily: 'Georgia, serif' }}>
-            "{quote}"
+            “{quote}”
           </p>
           <p className="text-xs text-[var(--text-muted)] font-mono mb-8">
-            // page_not_found.exe has stopped working
+            {'// page_not_found.exe has stopped working'}
           </p>
 
           {/* Web shooting counter */}

@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { moodColors, months } from './constants';
 import { Link } from 'react-router-dom';
+import { postPath } from '../../lib/slug';
 
 const CalendarView = ({
   currentMonth,
@@ -93,9 +94,8 @@ const CalendarView = ({
             );
 
             if (post) {
-              const slug = post.slug || post.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
               return (
-                <Link key={day} to={`/blog/${post.dateSlug || post.date.replace(/[^a-z0-9]+/gi, '-')}/${slug}`} title={post.title} className="block outline-none">
+                <Link key={day} to={postPath(post)} title={post.title} className="block outline-none">
                   {dayContent}
                 </Link>
               );

@@ -1,36 +1,41 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Navigate } from 'react-router-dom';
 import PageWrapper from '../components/layout/PageWrapper';
-import HiddenHero from '../components/hidden/HiddenHero';
+import Seo from '../components/Seo';
+import Hero from '../components/Hero';
 import {
   AboutMeSection,
   SkillCloudSection,
   ProjectShowcase,
   ConnectCTA,
-} from '../components/hidden/HiddenHomeSections';
+} from '../components/home/HomeSections';
 
+/**
+ * The easter-egg dimension, reachable only by clicking the C++ skill pill six
+ * times on the home page.
+ *
+ * The gate is evaluated during the first render rather than in an effect — the
+ * old effect-based redirect painted a frame of the secret page before bouncing,
+ * which both leaked the surprise and flashed content. A lazy useState
+ * initializer reads the flag once and is safe under StrictMode's double render.
+ */
 const HiddenHome = () => {
-  const navigate = useNavigate();
+  const [unlocked] = useState(() => sessionStorage.getItem('easterEggTriggered') === 'true');
 
-  useEffect(() => {
-    const isTriggered = sessionStorage.getItem('easterEggTriggered');
-
-    // 1. If not triggered legitimately -> boot to home
-    if (!isTriggered) {
-      navigate('/', { replace: true });
-      return;
-    }
-
-    // 2. Scroll to top immediately
-    window.scrollTo({ top: 0, behavior: 'instant' });
-  }, [navigate]);
+  if (!unlocked) return <Navigate to="/" replace />;
 
   return (
     <PageWrapper>
-      <HiddenHero />
+      <Seo
+        title="Hidden Dimension"
+        description="A quieter corner of the portfolio."
+        path="/hidden"
+        noIndex
+      />
+      <Hero variant="hidden" />
       <AboutMeSection />
-      <SkillCloudSection />
-      <ProjectShowcase />
+      <SkillCloudSection variant="hidden" />
+      <ProjectShowcase variant="hidden" />
       <ConnectCTA />
     </PageWrapper>
   );

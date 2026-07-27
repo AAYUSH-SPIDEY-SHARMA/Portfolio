@@ -1,51 +1,49 @@
 import { motion } from 'framer-motion';
+import { relativeTime } from '../../lib/wallStorage';
 
 const noteColors = [
-  '#FFFACD', // Lemon Chiffon
-  '#FFE4E1', // Misty Rose
-  '#E0F7FA', // Light Cyan
-  '#F3E5F5', // Lavender
-  '#E8F5E9', // Mint
-  '#FFF3E0', // Peach
-  '#F1F8E9', // Light Lime
+  '#FFFACD', // lemon chiffon
+  '#FFE4E1', // misty rose
+  '#E0F7FA', // light cyan
+  '#F3E5F5', // lavender
+  '#E8F5E9', // mint
+  '#FFF3E0', // peach
+  '#F1F8E9', // light lime
 ];
 
 const MessageNote = ({ msg, index }) => {
   const color = noteColors[index % noteColors.length];
-  // Calculate rotation once per component instance using index or fixed random seed based on ID to avoid hydration issues, 
-  // but for simplicity in this demo, pseudo-random is fine.
-  const rotation = (Math.sin(index * 1234.5) * 6 - 3).toFixed(1);
+  // Deterministic tilt so a note doesn't jump to a new angle on re-render.
+  const rotation = Number((Math.sin(index * 1234.5) * 6 - 3).toFixed(1));
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30, rotate: Number(rotation) }}
-      whileInView={{ opacity: 1, y: 0, rotate: Number(rotation) }}
-      whileHover={{ rotate: 0, scale: 1.05 }}
+    <motion.figure
+      initial={{ opacity: 0, y: 30, rotate: rotation }}
+      whileInView={{ opacity: 1, y: 0, rotate: rotation }}
+      whileHover={{ rotate: 0, scale: 1.04, zIndex: 10 }}
       viewport={{ once: true }}
-      transition={{ delay: index * 0.06 }}
-      className="break-inside-avoid mb-4 p-4 rounded cursor-default transition-shadow"
-      style={{
-        background: color,
-        boxShadow: '2px 3px 8px rgba(0,0,0,0.15)',
-        transform: `rotate(${rotation}deg)`,
-      }}
+      transition={{ delay: Math.min(index * 0.05, 0.6), type: 'spring', stiffness: 260, damping: 22 }}
+      className="break-inside-avoid mb-4 p-4 rounded relative"
+      style={{ background: color, boxShadow: '2px 3px 8px rgba(0,0,0,0.15)' }}
     >
-      {/* Emoji */}
-      <div className="text-right text-sm mb-1">{msg.emoji}</div>
+      <div className="text-right text-sm mb-1" aria-hidden="true">{msg.emoji}</div>
 
-      {/* Message text */}
-      <p className="text-sm leading-relaxed mb-3" style={{ color: '#2C1810', fontFamily: 'Caveat, cursive', fontSize: '1.1rem' }}>
-        "{msg.text}"
-      </p>
+      <blockquote
+        className="text-sm leading-relaxed mb-3"
+        style={{ color: '#2C1810', fontFamily: 'Caveat, cursive', fontSize: '1.1rem' }}
+      >
+        “{msg.text}”
+      </blockquote>
 
-      {/* Footer */}
-      <div className="flex items-center justify-between">
+      <figcaption className="flex items-center justify-between">
         <span className="text-[10px] font-medium" style={{ color: '#666' }}>
           {msg.isAnonymous ? '🎭 Anonymous' : `👤 ${msg.name}`}
         </span>
-        <span className="text-[10px]" style={{ color: '#999' }}>{msg.createdAt}</span>
-      </div>
-    </motion.div>
+        <span className="text-[10px]" style={{ color: '#999' }}>
+          {typeof msg.createdAt === 'number' ? relativeTime(msg.createdAt) : msg.createdAt}
+        </span>
+      </figcaption>
+    </motion.figure>
   );
 };
 

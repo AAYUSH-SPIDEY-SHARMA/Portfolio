@@ -1,9 +1,8 @@
 /* ═══ Google Fonts (must be first) ═══ */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Orbitron:wght@400;700;900&family=Noto+Sans+JP:wght@400;700;900&family=Caveat:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Orbitron:wght@400;700;900&family=Caveat:wght@400;600;700&display=swap');
 
 @import './styles/design-tokens.css';
 @import './styles/animations.css';
-@import './styles/stickers.css';
 
 @tailwind base;
 @tailwind components;
@@ -14,21 +13,14 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  /* White Paper Airplane - https://www.cursors-4u.com/cursor/white-paper-airplane */
-  cursor: url('https://cdn.cursors-4u.net/previews/paper-airplane-19477b19-32.webp') 32 32, auto !important;
 }
 
 html {
-  scroll-behavior: auto; /* Lenis handles smooth scroll */
+  scroll-behavior: smooth;
   overflow-x: hidden;
-}
-
-html.lenis, html.lenis body {
-  height: auto;
-}
-
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
+  /* Stop the layout shifting sideways when a page swaps between
+     scrollable and non-scrollable. */
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -38,6 +30,34 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+
+  /* Signature paper-airplane cursor.
+     Set on body (not *) and without !important so that inputs keep their
+     I-beam and disabled controls keep their not-allowed cursor. */
+  cursor: url('https://cdn.cursors-4u.net/previews/paper-airplane-19477b19-32.webp') 32 32, auto;
+}
+
+/* Interactive elements keep meaningful cursors. */
+a,
+button,
+[role='button'],
+summary {
+  cursor: pointer;
+}
+
+input,
+textarea,
+select,
+[contenteditable='true'] {
+  cursor: text;
+}
+
+button:disabled,
+input:disabled,
+textarea:disabled,
+[aria-disabled='true'] {
+  cursor: not-allowed;
 }
 
 /* ═══ Font Families ═══ */
@@ -45,29 +65,62 @@ body {
 .font-heading { font-family: 'Space Grotesk', sans-serif; }
 .font-body { font-family: 'Inter', sans-serif; }
 .font-mono { font-family: 'JetBrains Mono', monospace; }
-.font-japanese { font-family: 'Noto Sans JP', sans-serif; }
 .font-handwriting { font-family: 'Caveat', cursive; }
+
+/* ═══ Typography rhythm ═══
+   Display/heading type is set tight and optically balanced; body copy keeps
+   a comfortable measure. */
+.font-display,
+.font-heading {
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* ═══ Accessibility: visible keyboard focus ═══
+   Pointer users never see this; keyboard users always do. */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: 6px;
+}
+
+/* Skip link — first tab stop on every page. */
+.skip-link {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%, -150%);
+  z-index: 100000;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0 0 0.75rem 0.75rem;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  transition: transform var(--duration-normal) var(--ease-out);
+}
+.skip-link:focus {
+  transform: translate(-50%, 0);
+}
 
 /* ═══ Selection Color ═══ */
 ::selection {
-  background: rgba(108, 92, 231, 0.3);
-  color: var(--text-accent);
+  background: rgba(var(--primary-rgb), 0.25);
+  color: var(--text-primary);
 }
 
 /* ═══ Scrollbar ═══ */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--bg-primary);
-}
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-secondary); }
 ::-webkit-scrollbar-thumb {
-  background: var(--primary);
-  border-radius: 3px;
+  background: rgba(var(--primary-rgb), 0.5);
+  border-radius: 4px;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-light);
-}
+::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
 /* ═══ Section Base ═══ */
 .section-container {
@@ -87,56 +140,10 @@ body {
   position: relative;
 }
 
-/* ═══ Link Underline Animation ═══ */
-.link-underline {
-  position: relative;
-  text-decoration: none;
-}
-.link-underline::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--primary), var(--secondary));
-  transition: width var(--duration-normal) var(--ease-out);
-}
-.link-underline:hover::after {
-  width: 100%;
-}
-
-/* ═══ Card Spotlight Effect ═══ */
-.card-spotlight {
-  position: relative;
-  overflow: hidden;
-}
-.card-spotlight::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-    rgba(108, 92, 231, 0.1),
-    transparent 40%
-  );
-  border-radius: inherit;
-  opacity: 0;
-  transition: opacity var(--duration-normal);
-  pointer-events: none;
-  z-index: 1;
-}
-.card-spotlight:hover::before {
-  opacity: 1;
-}
-
-/* ═══ Dot Grid Background ═══ */
-.bg-dot-grid {
-  background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
-/* ═══ Hex Grid Background ═══ */
-.bg-hex-grid {
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='52' viewBox='0 0 60 52' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l30 15v26L30 52 0 41V15z' fill='none' stroke='rgba(108,92,231,0.04)' stroke-width='0.5'/%3E%3C/svg%3E");
+/* ═══ Media defaults ═══
+   Images never overflow their column, and never block the main thread
+   decoding. */
+img {
+  max-width: 100%;
+  height: auto;
 }

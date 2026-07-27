@@ -30,7 +30,8 @@ const ChatOrb = () => {
         initial={{ opacity: 0, scale: 0, y: 40 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ delay: 1.5, type: 'spring', stiffness: 200 }}
-        aria-label="Open BINGO Chat"
+        aria-label={isOpen ? 'Close BINGO chat' : 'Open BINGO chat'}
+        aria-expanded={isOpen}
       >
         {/* Outer Glow Ring */}
         <motion.div

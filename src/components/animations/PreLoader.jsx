@@ -207,7 +207,7 @@ const PreLoader = ({ onComplete }) => {
                 transition={{ delay: 0.8 }}
                 className="text-[10px] text-[var(--text-muted)] font-mono mt-3 tracking-wider"
               >
-                // Loading universe...
+                {'// Loading universe...'}
               </motion.p>
             )}
 

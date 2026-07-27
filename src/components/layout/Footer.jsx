@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Mail } from 'lucide-react';
 import { GithubIcon, LinkedinIcon, TwitterIcon, InstagramIcon } from '../icons/BrandIcons';
 import { github, linkedin, twitter, instagram, email } from '../../data/links';
+import { cld, cldSrcSet, ASSETS } from '../../lib/images';
 
 const footerLinks = [
   { label: 'Blog', path: '/blog' },
@@ -19,12 +20,23 @@ const socialLinks = [
 
 const Footer = () => {
   return (
-    <footer className="relative mt-20 overflow-hidden" style={{ height: '360px' }}>
+    /*
+      Was a fixed 360px box with absolutely-positioned content, so the taller
+      stacked mobile layout overflowed straight out of the footer. Now the
+      footer is a flex column that grows with its content and the artwork sits
+      behind it.
+    */
+    <footer className="relative mt-20 overflow-hidden min-h-[360px] flex flex-col justify-end">
 
-      {/* ── EYES IMAGE ── Full-width background, full opacity ── */}
+      {/* ── EYES IMAGE ── Full-width background ── */}
       <img
-        src="https://res.cloudinary.com/du8isxcag/image/upload/v1779047589/portfolio_assets/EYES_HD.png"
+        src={cld(ASSETS.eyes, { width: 1600 })}
+        srcSet={cldSrcSet(ASSETS.eyes, [768, 1200, 1600, 2000])}
+        sizes="100vw"
         alt=""
+        aria-hidden="true"
+        loading="lazy"
+        decoding="async"
         className="absolute inset-0 w-full h-full object-cover object-[center_20%]"
       />
 
@@ -36,9 +48,9 @@ const Footer = () => {
         }}
       />
 
-      {/* ── Content pinned to the bottom ── */}
-      <div className="absolute bottom-0 left-0 right-0 z-10 w-full max-w-5xl mx-auto px-6 pb-4">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-2">
+      {/* ── Content sits in flow at the bottom of the column ── */}
+      <div className="relative z-10 w-full max-w-5xl mx-auto px-6 pb-6 pt-24">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 md:gap-2">
 
           {/* Left: Brand */}
           <div className="flex-1 max-w-xs">
@@ -55,12 +67,12 @@ const Footer = () => {
               M.Sc AI/ML @ IIIT Lucknow · Full-Stack Developer · Open Source Contributor · Competitive Programmer
             </p>
             <p className="text-[#9ca3af] font-mono text-[11px]">
-              "I don't choose one path. I walk them all."
+              “I don’t choose one path. I walk them all.”
             </p>
           </div>
 
           {/* Middle: Navigate */}
-          <div className="flex-1 flex flex-col items-center gap-1">
+          <nav aria-label="Footer" className="flex-1 flex flex-col items-center gap-1">
             <Link
               to="/"
               className="font-mono text-[12px] tracking-wide"
@@ -77,34 +89,35 @@ const Footer = () => {
                 {link.label}
               </Link>
             ))}
-          </div>
+          </nav>
 
           {/* Right: Connect */}
           <div className="flex-1 flex flex-col items-center">
-            <h4
+            <h2
               className="font-display text-lg font-bold mb-2 tracking-widest uppercase italic"
               style={{ color: '#ff4d94', textShadow: '0 0 10px rgba(255,77,148,0.6)' }}
             >
               Connect
-            </h4>
-            <div className="flex items-center gap-2 mb-2">
+            </h2>
+            <ul className="flex items-center gap-2 mb-2">
               {socialLinks.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={social.label}
-                  className="w-8 h-8 flex items-center justify-center text-white rounded-lg transition-all duration-300 hover:bg-[rgba(255,77,148,0.15)]"
-                  style={{
-                    border: '1px solid rgba(255,77,148,0.6)',
-                    boxShadow: '0 0 8px rgba(255,77,148,0.2)',
-                  }}
-                >
-                  <social.icon size={14} />
-                </a>
+                <li key={social.label}>
+                  <a
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.label}
+                    className="w-8 h-8 flex items-center justify-center text-white rounded-lg transition-all duration-300 hover:bg-[rgba(255,77,148,0.15)]"
+                    style={{
+                      border: '1px solid rgba(255,77,148,0.6)',
+                      boxShadow: '0 0 8px rgba(255,77,148,0.2)',
+                    }}
+                  >
+                    <social.icon size={14} />
+                  </a>
+                </li>
               ))}
-            </div>
+            </ul>
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-[#00ff41] shadow-[0_0_8px_#00ff41]" />
               <span className="font-mono text-[#d1d5db] text-[11px] tracking-wide">

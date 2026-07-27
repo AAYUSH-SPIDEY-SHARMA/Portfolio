@@ -1,46 +1,56 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 /**
- * Custom hook to detect when the user is idle.
- * @param {number} timeoutMs - Time in milliseconds before considering the user idle.
- * @param {Function} onIdle - Callback when the user becomes idle.
- * @param {Function} onActive - Callback when the user becomes active again.
+ * Calls `onIdle` after `timeoutMs` without user input, then `onActive` on the
+ * next interaction.
+ *
+ * The previous version listed `isIdle`, `onIdle` and `onActive` in the effect's
+ * dependency array. Callers pass inline arrow functions, so every render
+ * produced new identities, which tore down and re-armed the whole timer — and
+ * because setup ran `handleActivity()` immediately, the render caused by
+ * `onIdle` fed straight back into `onActive`. The toast dismissed itself within
+ * a frame of appearing.
+ *
+ * Now the callbacks live in refs and idle state is a ref too, so the effect
+ * runs exactly once and the listeners are never re-registered.
  */
 export const useIdleTimer = (timeoutMs = 60000, onIdle, onActive) => {
-  const [isIdle, setIsIdle] = useState(false);
+  const onIdleRef = useRef(onIdle);
+  const onActiveRef = useRef(onActive);
+  const isIdleRef = useRef(false);
   const timeoutRef = useRef(null);
 
+  // Keep the refs pointing at the latest callbacks without re-running the effect.
   useEffect(() => {
-    const handleActivity = () => {
-      if (isIdle) {
-        setIsIdle(false);
-        if (onActive) onActive();
-      }
-      
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      
+    onIdleRef.current = onIdle;
+    onActiveRef.current = onActive;
+  });
+
+  useEffect(() => {
+    const arm = () => {
+      clearTimeout(timeoutRef.current);
       timeoutRef.current = setTimeout(() => {
-        setIsIdle(true);
-        if (onIdle) onIdle();
+        isIdleRef.current = true;
+        onIdleRef.current?.();
       }, timeoutMs);
     };
 
-    // Initial setup
-    handleActivity();
+    const handleActivity = () => {
+      if (isIdleRef.current) {
+        isIdleRef.current = false;
+        onActiveRef.current?.();
+      }
+      arm();
+    };
 
-    // Events to track user activity
+    arm();
+
     const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll'];
-    events.forEach((event) => window.addEventListener(event, handleActivity));
+    events.forEach((event) => window.addEventListener(event, handleActivity, { passive: true }));
 
     return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
+      clearTimeout(timeoutRef.current);
       events.forEach((event) => window.removeEventListener(event, handleActivity));
     };
-  }, [timeoutMs, isIdle, onIdle, onActive]);
-
-  return isIdle;
+  }, [timeoutMs]);
 };

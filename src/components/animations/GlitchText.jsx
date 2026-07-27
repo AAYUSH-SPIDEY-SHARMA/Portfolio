@@ -1,5 +1,3 @@
-import { motion } from 'framer-motion';
-
 /**
  * Spider-Verse style glitch text effect
  * Supports both `text` prop and `children`
