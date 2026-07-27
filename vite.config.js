@@ -12,6 +12,9 @@ export default defineConfig({
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           motion: ['framer-motion'],
+          // Only pulled in by the lazy blog/wall/admin routes — the home page
+          // never downloads it.
+          supabase: ['@supabase/supabase-js'],
         },
       },
     },

@@ -36,6 +36,39 @@ export function cldSrcSet(path, widths) {
   return widths.map((w) => `${cld(path, { width: w })} ${w}w`).join(', ');
 }
 
+/**
+ * Same as `cld`, but tolerant of whatever is stored on a post.
+ *
+ * Uploads save a versioned path ("v123/folder/file.jpg"), but a hand-entered
+ * row might hold a full URL — from Cloudinary or anywhere else. Full URLs are
+ * returned untouched; Cloudinary ones get transforms injected.
+ */
+export function imageUrl(stored, { width } = {}) {
+  if (!stored) return null;
+
+  if (stored.startsWith('http://') || stored.startsWith('https://')) {
+    // Inject transforms into a Cloudinary URL that doesn't have them yet.
+    const marker = '/image/upload/';
+    const at = stored.indexOf(marker);
+    if (at === -1) return stored; // not Cloudinary — leave it alone
+
+    const after = stored.slice(at + marker.length);
+    if (/^[a-z]_[^/]*\//.test(after)) return stored; // already transformed
+
+    const transforms = ['f_auto', 'q_auto'];
+    if (width) transforms.push(`w_${width}`, 'c_limit');
+    return `${stored.slice(0, at + marker.length)}${transforms.join(',')}/${after}`;
+  }
+
+  return cld(stored, { width });
+}
+
+/** srcSet for a stored image path or URL. */
+export function imageSrcSet(stored, widths) {
+  if (!stored) return undefined;
+  return widths.map((w) => `${imageUrl(stored, { width: w })} ${w}w`).join(', ');
+}
+
 /** Canonical asset paths. Add new images here, never inline in a component. */
 export const ASSETS = {
   heroBg: 'v1779048913/portfolio_assets/src_assets/hero-bg.png',

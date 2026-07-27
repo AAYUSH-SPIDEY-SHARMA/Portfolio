@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { relativeTime } from '../../lib/wallStorage';
+import { relativeTime } from '../../lib/wall';
 
 const noteColors = [
   '#FFFACD', // lemon chiffon
@@ -37,10 +37,10 @@ const MessageNote = ({ msg, index }) => {
 
       <figcaption className="flex items-center justify-between">
         <span className="text-[10px] font-medium" style={{ color: '#666' }}>
-          {msg.isAnonymous ? '🎭 Anonymous' : `👤 ${msg.name}`}
+          {msg.is_anonymous ? '🎭 Anonymous' : `👤 ${msg.name}`}
         </span>
         <span className="text-[10px]" style={{ color: '#999' }}>
-          {typeof msg.createdAt === 'number' ? relativeTime(msg.createdAt) : msg.createdAt}
+          {relativeTime(msg.created_at)}
         </span>
       </figcaption>
     </motion.figure>

@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /hidden
+Disallow: /admin
 
 Sitemap: https://aayushsharma.me/sitemap.xml
