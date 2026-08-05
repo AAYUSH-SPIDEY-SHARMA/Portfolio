@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { github, instagram, linkedin, twitter, resume } from '../data/links';
-import { cld, cldSrcSet, ASSETS } from '../lib/images';
+import { cld, ASSETS } from '../lib/images';
 import Typewriter from './animations/Typewriter';
 import { GithubIcon, InstagramIcon, LinkedinIcon, TwitterIcon } from './icons/BrandIcons';
 
@@ -23,21 +23,28 @@ const Hero = ({ variant = 'default' }) => {
       id="home"
       className="relative min-h-screen w-full flex items-center overflow-hidden"
       style={{
-        backgroundImage: `url(${cld(ASSETS.heroBg, { width: 1920 })})`,
+        // 2560 + auto:best — at w_1920/q_auto the sky banded badly on wide
+        // displays, which read as a low-resolution image.
+        backgroundImage: `url(${cld(ASSETS.heroBg, { width: 2560, quality: 'auto:best' })})`,
         backgroundSize: 'cover',
-        backgroundPosition: 'center bottom',
+        // The artwork's subject — moon, and the figure on the right — sits in
+        // the upper half. Anchoring to the bottom cropped both away.
+        backgroundPosition: 'center 35%',
         backgroundRepeat: 'no-repeat',
       }}
     >
-      {/* Decorative silhouette */}
-      <img
-        src={cld(ASSETS.ariseSilhouette, { width: 900 })}
-        alt=""
+      {/*
+        Legibility scrim. The artwork is pale on the left and dark on the
+        right; this lifts the left edge just enough for near-black body copy
+        to clear contrast without flattening the painting.
+      */}
+      <div
         aria-hidden="true"
-        loading="lazy"
-        decoding="async"
-        className="absolute right-0 bottom-0 h-[70vh] w-auto pointer-events-none hidden lg:block"
-        style={{ transform: 'translateX(30%)', mixBlendMode: 'multiply' }}
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'linear-gradient(100deg, rgba(247,248,252,0.92) 0%, rgba(247,248,252,0.78) 28%, rgba(247,248,252,0.25) 48%, transparent 62%)',
+        }}
       />
 
       <div className="w-full px-6 sm:px-12 md:px-16 lg:px-20 xl:px-28 py-16 md:py-20 relative z-10">
@@ -58,15 +65,14 @@ const Hero = ({ variant = 'default' }) => {
               <Typewriter text="I'm Aayush Sharma" />
             </h1>
 
-            <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 mb-4">
-              {isHidden
-                ? 'Welcome to the dimension few people find.'
-                : 'Open Source Contributor · Bitcoin Protocol Learner · GSoC Aspirant'}
-            </h2>
+            {isHidden && (
+              <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 mb-4">
+                Welcome to the dimension few people find.
+              </h2>
+            )}
 
-            <p className="text-sm md:text-base text-gray-700 mb-6 leading-relaxed max-w-md mx-auto lg:mx-0">
-              I work on open-source systems, competitive programming, and protocol-level
-              debugging with a current focus on Bitcoin internals.
+            <p className="text-base md:text-lg text-gray-800 mb-6 leading-relaxed max-w-md mx-auto lg:mx-0">
+              AI/ML Student at IIIT Lucknow
             </p>
 
             {/* Socials */}
@@ -96,23 +102,13 @@ const Hero = ({ variant = 'default' }) => {
             </a>
           </motion.div>
 
-          {/* Right — illustration */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-            className="flex-1 flex justify-center lg:justify-end"
-          >
-            <img
-              src={cld(ASSETS.heroIllustration, { width: 900 })}
-              srcSet={cldSrcSet(ASSETS.heroIllustration, [480, 720, 900, 1200])}
-              sizes="(max-width: 1024px) 90vw, 45vw"
-              alt="Illustration of a developer working at a desk"
-              fetchPriority="high"
-              decoding="async"
-              className="w-full max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl h-auto object-contain"
-            />
-          </motion.div>
+          {/*
+            The flat vector illustration and the ARISE silhouette used to live
+            here. Both sat directly on the painted figure once the background
+            became full-bleed artwork, so the right half is deliberately left
+            empty — the illustration IS the hero visual now.
+          */}
+          <div className="hidden lg:block flex-1" aria-hidden="true" />
         </div>
       </div>
     </section>

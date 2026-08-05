@@ -16,10 +16,14 @@ const BASE = `https://res.cloudinary.com/${CLOUD_NAME}/image/upload`;
  * @param {string} path  Versioned asset path, e.g. "v1779047601/portfolio_assets/MC.png"
  * @param {object} [opts]
  * @param {number} [opts.width]  Cap the width in px (uses c_limit — never upscales)
+ * @param {string} [opts.quality]
+ *   Cloudinary quality token. Defaults to `q_auto`, which is right for
+ *   thumbnails and cards. Large flat-colour artwork — skies, gradients — bands
+ *   visibly at that setting, so full-bleed pieces pass `auto:best`.
  * @returns {string}
  */
-export function cld(path, { width } = {}) {
-  const transforms = ['f_auto', 'q_auto'];
+export function cld(path, { width, quality = 'auto' } = {}) {
+  const transforms = ['f_auto', `q_${quality}`];
   if (width) transforms.push(`w_${width}`, 'c_limit');
   return `${BASE}/${transforms.join(',')}/${path}`;
 }
@@ -32,8 +36,19 @@ export function cld(path, { width } = {}) {
  * @param {number[]} widths
  * @returns {string}
  */
-export function cldSrcSet(path, widths) {
-  return widths.map((w) => `${cld(path, { width: w })} ${w}w`).join(', ');
+export function cldSrcSet(path, widths, opts = {}) {
+  return widths.map((w) => `${cld(path, { ...opts, width: w })} ${w}w`).join(', ');
+}
+
+/**
+ * The untouched original — no format swap, no quality pass, no resize.
+ *
+ * Reach for this only when an asset must be delivered byte-identical to what
+ * was uploaded. Everything else should go through `cld`, which is dramatically
+ * lighter over the wire.
+ */
+export function cldOriginal(path) {
+  return `${BASE}/${path}`;
 }
 
 /**
@@ -71,7 +86,10 @@ export function imageSrcSet(stored, widths) {
 
 /** Canonical asset paths. Add new images here, never inline in a component. */
 export const ASSETS = {
-  heroBg: 'v1779048913/portfolio_assets/src_assets/hero-bg.png',
+  heroBg: 'v1785914815/portfolio_assets/hero-bg-moonlit.png',
+  footerBanner: 'v1785916813/portfolio_assets/footer-banner-spidey.png',
+  divider: 'v1785914829/portfolio_assets/divider-spider.png',
+  spiderMark: 'v1785914834/portfolio_assets/spider-mark.png',
   heroIllustration: 'v1779048915/portfolio_assets/src_assets/hero-illustration.png',
   githubIcon: 'v1779048911/portfolio_assets/src_assets/github-icon.png',
   instagramIcon: 'v1779048916/portfolio_assets/src_assets/instagram-icon.png',

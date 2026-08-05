@@ -93,3 +93,45 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* ── Preloader mark ──
+   Plain CSS rather than Framer: the intro's typewriter re-renders the tree
+   every 55ms, which left the motion component's entrance pinned at its
+   initial values. A keyframe is immune to re-renders. */
+@keyframes mark-in {
+  from {
+    opacity: 0;
+    transform: translateY(-24px) scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-mark-in {
+  animation: mark-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes mark-glow {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50%      { opacity: 1;   transform: scale(1.12); }
+}
+
+.animate-mark-glow {
+  animation: mark-glow 3.2s ease-in-out infinite;
+}
+
+@keyframes soft-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-soft-in { animation: soft-in 0.5s ease-out both; }
+
+@keyframes rule-in {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+.animate-rule-in { animation: rule-in 0.7s ease-out both; }

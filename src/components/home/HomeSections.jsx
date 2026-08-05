@@ -320,11 +320,11 @@ export const SkillCloudSection = ({ variant = 'default' }) => {
 
 const showcaseItems = [
   {
-    title: 'Aether Platform',
-    subtitle: 'IIIT Lucknow Club',
+    title: 'Aether',
+    subtitle: 'The Data Science and AI/ML Club of IIIT Lucknow',
     desc: 'Full-stack web platform with JWT auth, Razorpay integration, event management, and role-based access control.',
     tags: ['React', 'Node.js', 'MongoDB'],
-    link: '#',
+    link: 'https://aether-frontend.sharmaaayush598.workers.dev',
     image: ASSETS.card9,
     align: 'left',
     scale: 1.45,
@@ -332,38 +332,41 @@ const showcaseItems = [
     translateY: '-40px',
   },
   {
-    title: 'P4-SpecTec',
-    subtitle: 'KAIST Research',
-    desc: 'Core contribution to WebAssembly spec tooling. Implemented non-local type inference in OCaml.',
-    tags: ['OCaml', 'WebAssembly'],
+    title: 'AimPeak',
+    subtitle: 'An AI powered test platform for JEE/NEET students',
+    desc: 'Architected a scalable full-stack platform for JEE/NEET prep with adaptive testing and real-time analytics.',
+    tags: ['Next.js', 'Node.js' , 'PostgreSQL'],
     link: '#',
     image: ASSETS.card7,
     align: 'right',
     scale: 1.25,
-    translateX: '-45px',
+    // Right-aligned characters sit after the card, so a negative offset drags
+    // them back across the copy. Positive moves them clear.
+    translateX: '25px',
   },
   {
-    title: 'AimPeak',
-    subtitle: 'CP Tracker',
-    desc: 'Platform that aggregates CP profiles, tracks progress, and generates heatmaps across platforms.',
+    title: 'DOTCODE',
+    subtitle: 'All in One website for cs students',
+    desc: 'platform in which you can find all the hackathons happening in different platform , practice dsa , cp contest , find job opprtunites , meet new people.',
     tags: ['Next.js', 'Firebase', 'APIs'],
     link: '#',
     image: ASSETS.card5,
     align: 'left',
     scale: 1.35,
-    translateX: '45px',
+    // +45px overlapped the card, -30px overshot the other way.
+    translateX: '-12px',
   },
   {
-    title: 'Project 4',
-    subtitle: 'Coming Soon',
-    desc: 'An upcoming professional project. Currently in development with cutting-edge tech.',
-    tags: ['React', 'Tailwind', 'Node.js'],
-    link: '#',
+    title: 'HRMS',
+    subtitle: 'HR Management system',
+    desc: 'A human resource management system — employee records, attendance, and admin workflows in a single dashboard',
+    tags: ['React', 'Node.js', 'JavaScript'],
+    link: 'https://hrms-beryl-delta.vercel.app/signin.html',
     image: ASSETS.card8,
     hiddenImage: ASSETS.card6,
     align: 'right',
     scale: 1.35,
-    translateX: '-45px',
+    translateX: '25px',
   },
 ];
 
@@ -371,7 +374,7 @@ const ProjectCharacter = ({ project, image, fromLeft, delay }) => (
   <motion.div
     initial={{ opacity: 0, x: fromLeft ? -100 : 100, rotate: fromLeft ? -5 : 5 }}
     whileInView={{ opacity: 1, x: 0, rotate: 0 }}
-    transition={{ duration: 1.4, delay, ease: [0.16, 1, 0.3, 1] }}
+    transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
     viewport={{ once: true, amount: 0.3 }}
     className="relative z-20 pointer-events-none"
     style={fromLeft ? { marginRight: '-30px' } : { marginLeft: '-30px' }}
@@ -454,16 +457,23 @@ export const ProjectShowcase = ({ variant = 'default' }) => {
             const isLeft = project.align === 'left';
             const image = isHidden && project.hiddenImage ? project.hiddenImage : project.image;
 
+            /*
+              Stagger by column, not by absolute index. The grid is two-up, so
+              cards 3 and 4 scroll into view as their own row — keying off idx
+              made them sit there for the best part of a second first.
+            */
+            const stagger = (idx % 2) * 0.1;
+
             return (
               <div key={project.title} className="flex flex-row items-center justify-center relative">
                 {isLeft && (
-                  <ProjectCharacter project={project} image={image} fromLeft delay={idx * 0.3} />
+                  <ProjectCharacter project={project} image={image} fromLeft delay={stagger} />
                 )}
 
                 <motion.article
                   initial={{ opacity: 0, y: 50, scale: 0.95 }}
                   whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{ duration: 1.2, delay: idx * 0.3 + 0.3, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{ duration: 0.55, delay: stagger + 0.08, ease: [0.16, 1, 0.3, 1] }}
                   viewport={{ once: true, amount: 0.3 }}
                   className="w-[260px] md:w-[320px] min-h-[260px] md:min-h-[340px] bg-[var(--bg-secondary)] border border-[var(--border-default)] p-6 md:p-8 rounded-3xl shadow-xl hover:shadow-[0_0_30px_rgba(var(--primary-rgb),0.18)] hover:border-[var(--primary)] transition-all duration-500 group relative overflow-hidden flex flex-col justify-center z-10"
                 >
@@ -491,19 +501,29 @@ export const ProjectShowcase = ({ variant = 'default' }) => {
                       ))}
                     </ul>
 
-                    <a
-                      href={project.link}
-                      className="inline-flex items-center gap-1 text-[var(--primary)] text-xs font-bold hover:text-[var(--secondary)] transition-colors group/link mt-auto"
-                    >
-                      VIEW PROJECT
-                      <ArrowRight size={14} className="group-hover/link:translate-x-1.5 transition-transform" aria-hidden="true" />
-                      <span className="sr-only">: {project.title}</span>
-                    </a>
+                    {/* A '#' href looked like a working link and went nowhere.
+                        Only ship a link when there is something to link to. */}
+                    {project.link && project.link !== '#' ? (
+                      <a
+                        href={project.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-[var(--primary)] text-xs font-bold hover:text-[var(--secondary)] transition-colors group/link mt-auto"
+                      >
+                        LIVE LINK
+                        <ArrowRight size={14} className="group-hover/link:translate-x-1.5 transition-transform" aria-hidden="true" />
+                        <span className="sr-only">: {project.title} (opens in a new tab)</span>
+                      </a>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 text-[var(--text-muted)] text-xs font-bold mt-auto">
+                        COMING SOON
+                      </span>
+                    )}
                   </div>
                 </motion.article>
 
                 {!isLeft && (
-                  <ProjectCharacter project={project} image={image} fromLeft={false} delay={idx * 0.3} />
+                  <ProjectCharacter project={project} image={image} fromLeft={false} delay={stagger} />
                 )}
               </div>
             );

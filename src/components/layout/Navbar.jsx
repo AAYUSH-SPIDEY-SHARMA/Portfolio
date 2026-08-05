@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
+import { cld, ASSETS } from '../../lib/images';
 
 const navLinks = [
   { name: 'Home', path: '/' },
@@ -12,6 +13,15 @@ const navLinks = [
 
 const LOGO_CLICKS_TO_UNLOCK = 5;
 const LOGO_CLICK_RESET_MS = 1500;
+
+/**
+ * Routes whose hero is full-bleed artwork.
+ *
+ * On these the bar stays transparent and switches to light type over a soft
+ * scrim; everywhere else the pages are light, so the normal theme colours are
+ * the legible choice.
+ */
+const ARTWORK_HERO_ROUTES = ['/', '/hidden'];
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -74,6 +84,8 @@ const Navbar = () => {
     }
   };
 
+  const overArtwork = ARTWORK_HERO_ROUTES.includes(location.pathname) && !isScrolled;
+
   return (
     <>
       <nav
@@ -82,18 +94,49 @@ const Navbar = () => {
           isScrolled ? 'glass shadow-lg' : 'bg-transparent'
         }`}
       >
-        <div className="max-w-[var(--max-width)] mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Scrim: lets the artwork read through while keeping light type legible
+            over both the pale left of the painting and its dark right. */}
+        {overArtwork && (
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background:
+                'linear-gradient(to bottom, rgba(10,12,22,0.62) 0%, rgba(10,12,22,0.30) 60%, transparent 100%)',
+            }}
+          />
+        )}
+
+        <div className="relative max-w-[var(--max-width)] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="relative">
-              <Link to="/" onClick={handleLogoClick} className="flex items-center gap-2 group">
-                <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--primary)] to-[var(--secondary)] flex items-center justify-center group-hover:shadow-[var(--glow-purple)] transition-shadow duration-300">
-                  <span className="text-white font-bold text-sm font-display">AS</span>
-                </span>
-                <span className="font-mono text-sm text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors hidden sm:block">
-                  <span className="text-[var(--primary)]">&lt;</span>
-                  aayush
-                  <span className="text-[var(--primary)]"> /&gt;</span>
+              <Link to="/" onClick={handleLogoClick} className="flex items-center gap-2.5 group">
+                <img
+                  src={cld(ASSETS.spiderMark, { width: 96 })}
+                  alt=""
+                  aria-hidden="true"
+                  width={28}
+                  height={32}
+                  decoding="async"
+                  className="h-8 w-auto transition-transform duration-300 group-hover:scale-110 group-hover:rotate-[-6deg]"
+                  style={{
+                    filter: overArtwork
+                      ? 'drop-shadow(0 2px 6px rgba(0,0,0,0.55))'
+                      : 'drop-shadow(0 1px 3px rgba(0,0,0,0.25))',
+                  }}
+                />
+                <span
+                  className={`font-display text-xl font-bold italic tracking-wide transition-colors duration-300 hidden sm:block ${
+                    overArtwork ? 'text-white' : 'text-[var(--text-primary)]'
+                  }`}
+                  style={
+                    overArtwork
+                      ? { textShadow: '0 1px 10px rgba(0,0,0,0.55)' }
+                      : undefined
+                  }
+                >
+                  SPIDEY
                 </span>
                 <span className="sr-only">Aayush Sharma — home</span>
               </Link>
@@ -136,15 +179,24 @@ const Navbar = () => {
                       to={link.path}
                       aria-current={isActive ? 'page' : undefined}
                       className={`relative block px-3 py-2 text-xs font-medium rounded-lg transition-all duration-200 ${
-                        isActive
-                          ? 'text-[var(--text-accent)]'
-                          : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                        overArtwork
+                          ? isActive
+                            ? 'text-white'
+                            : 'text-white/80 hover:text-white'
+                          : isActive
+                            ? 'text-[var(--text-accent)]'
+                            : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                       }`}
+                      style={overArtwork ? { textShadow: '0 1px 8px rgba(0,0,0,0.6)' } : undefined}
                     >
                       {isActive && (
                         <motion.span
                           layoutId="nav-active"
-                          className="absolute inset-0 rounded-lg bg-[var(--primary)]/10 border border-[var(--primary)]/20"
+                          className={`absolute inset-0 rounded-lg border ${
+                            overArtwork
+                              ? 'bg-white/15 border-white/30'
+                              : 'bg-[var(--primary)]/10 border-[var(--primary)]/20'
+                          }`}
                           transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                         />
                       )}
@@ -159,7 +211,11 @@ const Navbar = () => {
             <button
               ref={toggleRef}
               onClick={() => setIsMobileOpen((open) => !open)}
-              className="lg:hidden p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+              className={`lg:hidden p-2 transition-colors ${
+                overArtwork
+                  ? 'text-white/90 hover:text-white'
+                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+              }`}
               aria-label={isMobileOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={isMobileOpen}
               aria-controls="mobile-menu"
@@ -224,7 +280,7 @@ const Navbar = () => {
               </ul>
 
               <div className="absolute bottom-8 left-6 right-6">
-                <p className="text-xs text-[var(--text-muted)] font-mono">&lt;aayush sharma /&gt;</p>
+                <p className="font-display text-base font-bold italic tracking-wide text-[var(--text-primary)]">Aayush Sharma</p>
                 <p className="text-xs text-[var(--text-muted)] mt-1">M.Sc AI/ML @ IIIT Lucknow</p>
               </div>
             </motion.div>

@@ -5,5 +5,5 @@ export const devto = "https://dev.to/aaayushhh";
 export const medium = "https://medium.com/@aaayushhh";
 export const linkedin = "https://www.linkedin.com/in/aayush-sharma-661179330/";
 export const twitter = "https://x.com/Aaayusshhhh";
-export const resume = "https://drive.google.com/file/d/1RYYfkRcvl7ImTcWr58hn0wf-NvABeWgE/view";
+export const resume = "https://drive.google.com/file/d/1JZPrDxmogAQ9o1PxYN6_gfag-DKkQ7KS/view?usp=sharing";
 export const email = "sharmaaayush598@gmail.com";

@@ -1,5 +1,6 @@
 import PageWrapper from '../components/layout/PageWrapper';
 import Seo from '../components/Seo';
+import SectionDivider from '../components/layout/SectionDivider';
 import Hero from '../components/Hero';
 import {
   AboutMeSection,
@@ -11,14 +12,17 @@ import {
 const Home = () => (
   <PageWrapper>
     <Seo
-      title="Open Source Contributor & AI/ML Engineer"
-      description="M.Sc AI/ML at IIIT Lucknow. Open source contributor, competitive programmer, and Bitcoin protocol learner. Explore projects, skills, and writing."
+      title="AI/ML Engineer"
+      description="AI/ML Student at IIIT Lucknow."
       path="/"
     />
     <Hero />
     <AboutMeSection />
+    <SectionDivider />
     <SkillCloudSection />
+    <SectionDivider />
     <ProjectShowcase />
+    <SectionDivider />
     <ConnectCTA />
   </PageWrapper>
 );

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import PageWrapper from '../components/layout/PageWrapper';
 import Seo from '../components/Seo';
+import SectionDivider from '../components/layout/SectionDivider';
 import Hero from '../components/Hero';
 import {
   AboutMeSection,
@@ -34,8 +35,11 @@ const HiddenHome = () => {
       />
       <Hero variant="hidden" />
       <AboutMeSection />
+      <SectionDivider />
       <SkillCloudSection variant="hidden" />
+      <SectionDivider />
       <ProjectShowcase variant="hidden" />
+      <SectionDivider />
       <ConnectCTA />
     </PageWrapper>
   );
