@@ -1,0 +1,45 @@
+name: Supabase keep-alive
+
+# Supabase pauses free-tier projects after 7 days with no database request.
+# A paused project takes the blog, the wall and the admin login down until it
+# is manually restored from the dashboard, so this pings it twice a week —
+# Sunday and Wednesday — leaving plenty of margin either side of the deadline.
+#
+# The key below is the publishable (anon) key. It is public by design: it ships
+# inside the browser bundle, and Row Level Security is what actually protects
+# the data. Committing it here exposes nothing that visiting the site doesn't.
+
+on:
+  schedule:
+    # 07:14 UTC. An off-the-hour minute avoids the congestion GitHub gets at
+    # :00, when scheduled jobs are most likely to be delayed or dropped.
+    - cron: '14 7 * * 0,3'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Query the database
+        env:
+          SUPABASE_URL: https://ilnvscxjhpavihykqbjn.supabase.co
+          SUPABASE_KEY: sb_publishable_K3LNvOuaBJDwwARJN0zidQ_9c4_7pNB
+        run: |
+          set -euo pipefail
+
+          # Must be a real query. Hitting the host alone does not count as
+          # database activity and will not reset the inactivity timer.
+          status=$(curl -sS -o /tmp/body -w '%{http_code}' \
+            "${SUPABASE_URL}/rest/v1/posts?select=id&limit=1" \
+            -H "apikey: ${SUPABASE_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_KEY}")
+
+          echo "HTTP ${status}"
+          echo "Response: $(cat /tmp/body)"
+
+          if [ "$status" != "200" ]; then
+            echo "::error::Supabase ping failed with HTTP ${status}. The project may be paused — restore it at https://supabase.com/dashboard"
+            exit 1
+          fi
+
+          echo "Project is awake."

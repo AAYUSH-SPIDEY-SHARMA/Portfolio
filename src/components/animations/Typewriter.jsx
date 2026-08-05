@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useReducedMotion } from '../../hooks/useEffects';
 
 /**
@@ -7,45 +7,86 @@ import { useReducedMotion } from '../../hooks/useEffects';
  * Replaces the old `animate-typewriter` class, which was referenced by the Hero
  * but never actually defined anywhere — so the effect silently did nothing.
  * A pure-CSS width animation can't know the text's natural width, so this is
- * driven in JS (the same approach PreLoader already uses).
+ * driven in JS.
  *
- * Reserves the full text as invisible inline text so the line never reflows
- * mid-type, and renders instantly for anyone who prefers reduced motion.
+ * With `loop`, it types, holds, deletes, and starts over. Reserves the full
+ * text as invisible inline text so the line never reflows mid-cycle, and
+ * renders the finished string instantly for anyone who prefers reduced motion.
  */
-const Typewriter = ({ text, speed = 70, startDelay = 350, className = '', caretClassName = '' }) => {
+const Typewriter = ({
+  text,
+  speed = 70,
+  deleteSpeed = 38,
+  startDelay = 350,
+  holdMs = 1800,
+  restMs = 500,
+  loop = false,
+  className = '',
+  caretClassName = '',
+}) => {
   const prefersReduced = useReducedMotion();
   const [count, setCount] = useState(0);
-  const [done, setDone] = useState(false);
+  const [typing, setTyping] = useState(true);
+
+  // A ref chain rather than an interval: each step schedules the next one, so
+  // the typing and deleting phases can run at different speeds and the hold
+  // between them doesn't need its own effect.
+  const timer = useRef(null);
 
   useEffect(() => {
     if (prefersReduced) {
       setCount(text.length);
-      setDone(true);
+      setTyping(false);
       return;
     }
 
-    setCount(0);
-    setDone(false);
+    let cancelled = false;
+    let i = 0;
+    let forward = true;
 
-    let interval;
-    const timeout = setTimeout(() => {
-      interval = setInterval(() => {
-        setCount((c) => {
-          if (c >= text.length) {
-            clearInterval(interval);
-            setDone(true);
-            return c;
+    const schedule = (fn, ms) => {
+      timer.current = setTimeout(() => {
+        if (!cancelled) fn();
+      }, ms);
+    };
+
+    const step = () => {
+      if (forward) {
+        i += 1;
+        setCount(i);
+        if (i >= text.length) {
+          if (!loop) {
+            setTyping(false);
+            return;
           }
-          return c + 1;
-        });
-      }, speed);
-    }, startDelay);
+          setTyping(false);
+          forward = false;
+          schedule(step, holdMs);
+          return;
+        }
+        schedule(step, speed);
+      } else {
+        i -= 1;
+        setCount(i);
+        if (i <= 0) {
+          forward = true;
+          setTyping(true);
+          schedule(step, restMs);
+          return;
+        }
+        schedule(step, deleteSpeed);
+      }
+    };
+
+    setCount(0);
+    setTyping(true);
+    schedule(step, startDelay);
 
     return () => {
-      clearTimeout(timeout);
-      clearInterval(interval);
+      cancelled = true;
+      clearTimeout(timer.current);
     };
-  }, [text, speed, startDelay, prefersReduced]);
+  }, [text, speed, deleteSpeed, startDelay, holdMs, restMs, loop, prefersReduced]);
 
   return (
     <span className={`relative inline-block ${className}`}>
@@ -57,7 +98,7 @@ const Typewriter = ({ text, speed = 70, startDelay = 350, className = '', caretC
         {text.slice(0, count)}
         <span
           aria-hidden="true"
-          className={`${done ? 'animate-caret' : ''} inline-block w-[0.06em] -mb-[0.08em] h-[0.85em] align-baseline bg-[var(--primary)] ml-[0.06em] ${caretClassName}`}
+          className={`${typing ? '' : 'animate-caret'} inline-block w-[0.06em] -mb-[0.08em] h-[0.85em] align-baseline bg-[var(--primary)] ml-[0.06em] ${caretClassName}`}
         />
       </span>
     </span>
