@@ -16,7 +16,6 @@
       ]
     },
     {
-      "comment": "Vite emits content-hashed filenames, so built assets are immutable.",
       "source": "/assets/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
@@ -29,7 +28,6 @@
       ]
     },
     {
-      "comment": "The SPA shell must never be cached, or deploys go stale.",
       "source": "/index.html",
       "headers": [
         { "key": "Cache-Control", "value": "no-cache" }
